@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Buteurs du soir</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Buteurs">
+<meta name="theme-color" content="#0b2a6b">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#0b2a6b;--red:#d7132b;--bg:#f3f6fa;--card:#fff;--ink:#0b1530;--mute:#5b6785;--line:#dfe5ef;--ice:#e8eef7;
+ --up:#16653a;--down:#b3122a;--top:env(safe-area-inset-top);--bot:env(safe-area-inset-bottom)}
+@media(prefers-color-scheme:dark){:root{--bg:#0a1022;--card:#121a33;--ink:#eef2fb;--mute:#9aa6c4;--line:#222c4a;--ice:#1b2544;--up:#4cc98a;--down:#ff6b7d}}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+a{color:inherit;text-decoration:none}
+.H{font-family:"Barlow Condensed",sans-serif;font-weight:800}
+header{background:var(--blue);color:#fff;padding:calc(var(--top) + 16px) 18px 16px}
+header h1{margin:0;font-size:38px;line-height:1.02}
+.sub{font-size:13px;opacity:.85}
+.redline{height:4px;background:var(--red);margin:14px -18px 0}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.chip{min-height:36px;padding:0 14px;border-radius:18px;border:1px solid rgba(255,255,255,.4);background:none;color:#fff;font:500 14px Inter,sans-serif}
+.chip.on{background:#fff;color:var(--blue);border-color:#fff;font-weight:600}
+.badge{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:10px;white-space:nowrap}
+.b-ok{background:#e3f4ea;color:#16653a}.b-pr{background:#eef2fb;color:#3a4a75}.b-warn{background:#fff1d6;color:#8a5300}
+header .badge{background:rgba(255,255,255,.16);color:#fff}
+main{max-width:640px;margin:0 auto;padding:12px 14px calc(90px + var(--bot))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px}
+.card h2{margin:0 0 8px;font-size:21px}
+.row{display:grid;grid-template-columns:28px minmax(0,1fr) 72px;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:11px 14px;margin-bottom:8px;min-height:64px}
+.rk{font-size:22px;color:var(--mute);text-align:center}
+.nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{font-size:12.5px;color:var(--mute);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.pct{font-size:32px;line-height:1;color:var(--blue);text-align:right}
+@media(prefers-color-scheme:dark){.pct,.big{color:#8fb0ff}}
+.form{display:flex;gap:3px;margin-top:4px}.form i{width:14px;height:6px;border-radius:2px;background:var(--line)}
+.form i.s{background:#7fa0dc}.form i.g{background:var(--red)}
+.trend{font-size:11.5px;font-weight:600;text-align:right;color:var(--mute)}
+.f{display:grid;grid-template-columns:minmax(0,1fr) 70px 46px;gap:8px;align-items:center;font-size:13px;margin:7px 0}
+.f small{display:block;color:var(--mute);font-size:11.5px}
+.fb{height:8px;background:var(--ice);border-radius:4px;position:relative;overflow:hidden}
+.fb::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--line)}
+.fb i{position:absolute;top:0;bottom:0;border-radius:4px}
+.gh{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--blue);padding-bottom:3px;margin-top:14px}
+.gh span:first-child{font-family:"Barlow Condensed";font-weight:700;font-size:17px}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.tile{background:var(--bg);border-radius:10px;padding:7px 8px;display:flex;flex-direction:column}
+.tile b{font-family:"Barlow Condensed";font-size:20px;line-height:1.1}.tile span{font-size:11px;color:var(--mute)}
+header .tile{background:rgba(255,255,255,.1)}header .tile span{color:#fff;opacity:.85}
+.ring{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;flex:none}
+.ring>div{width:74px;height:74px;border-radius:50%;background:var(--blue);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.bars{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;align-items:end;height:80px;margin-top:10px}
+.bars span{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;height:100%}
+.bars i{width:100%;background:#7fa0dc;border-radius:3px 3px 0 0}.bars b{width:8px;height:8px;border-radius:50%}
+table{width:100%;border-collapse:collapse;font-size:13px}td{padding:6px 0;border-top:1px solid var(--line)}
+.cmp td:nth-child(2){text-align:center;color:var(--mute)}.cmp td:last-child{text-align:right}
+.hbar{display:grid;grid-template-columns:138px minmax(0,1fr) 44px;gap:8px;align-items:center;font-size:12.5px;margin:6px 0}
+.hbar span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track{height:9px;background:var(--ice);border-radius:4px;overflow:hidden}.track i{display:block;height:100%;border-radius:4px}
+.back{display:inline-flex;align-items:center;gap:4px;font-size:14px;min-height:32px;color:#fff;margin-bottom:6px}
+nav{position:fixed;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--card);border-top:1px solid var(--line);padding:8px 0 calc(8px + var(--bot))}
+nav a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--mute);min-height:44px}
+nav a.on{color:var(--blue);font-weight:600}@media(prefers-color-scheme:dark){nav a.on{color:#8fb0ff}}
+.note{font-size:12px;color:var(--mute);margin:6px 4px}
+.empty{text-align:center;color:var(--mute);padding:50px 10px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<nav id="nav">
+ <a href="#top" data-k="top"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19h16M7 15l3-4 3 2 4-6"/></svg>Ce soir</a>
+ <a href="#matchs" data-k="matchs"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><ellipse cx="12" cy="9" rx="7" ry="3"/><path d="M5 9v4c0 1.7 3.1 3 7 3s7-1.3 7-3V9"/></svg>Matchs</a>
+ <a href="#fiabilite" data-k="fiabilite"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/></svg>Fiabilité</a>
+ <a href="#modele" data-k="modele"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Modèle</a>
+</nav>
+<script>
+{
+const $ = s => document.querySelector(s), app = $('#app');
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const nf = (x, d = 1) => x == null ? '–' : Number(x).toLocaleString('fr-FR', {minimumFractionDigits: d, maximumFractionDigits: d});
+const pc = p => Math.round(p * 100) + '%';
+const GROUPS = {player: 'Le joueur', opp: "L'adversaire", ctx: 'Le contexte', book: 'Les bookmakers'};
+const GCOL = {player: '#0b2a6b', opp: '#d7132b', ctx: '#7fa0dc', book: '#f2a900'};
+const STAGE = {preview: ['Provisoire', 'b-warn'], update: ['Mis à jour', 'b-pr'], final: ['Version finale', 'b-ok']};
+let D = null, P = {}, M = {}, filter = 'all';
+
+const get = u => fetch(u + '?' + Date.now()).then(r => r.ok ? r.json() : null).catch(() => null);
+Promise.all([get('data.json'), get('precision.json'), get('model.json')]).then(([d, p, m]) => {
+  D = d; P = p || {}; M = m || {}; route();
+});
+addEventListener('hashchange', route);
+
+function route() {
+  const h = location.hash.slice(1) || 'top';
+  const [k, id] = h.split('-');
+  document.querySelectorAll('nav a').forEach(a => a.classList.toggle('on', a.dataset.k === (k === 'joueur' ? 'top' : k === 'match' ? 'matchs' : k)));
+  scrollTo(0, 0);
+  if (!D && k !== 'modele' && k !== 'fiabilite') { app.innerHTML = '<p class="empty">Chargement… ou pas encore de données : lance la première mise à jour.</p>'; return; }
+  ({top: viewTop, joueur: () => viewPlayer(id), matchs: viewGames, match: () => viewMatch(id), fiabilite: viewPrecision, modele: viewModel}[k] || viewTop)();
+}
+
+const player = id => D.players[id];
+const night = () => new Date(D.date + 'T12:00:00').toLocaleDateString('fr-FR', {weekday: 'long', day: 'numeric', month: 'long'});
+const updated = () => new Date(D.generated).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris'});
+const hour = iso => iso ? new Date(iso).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris'}) : '';
+const back = (href, label) => `<a class="back" href="${href}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>${label}</a>`;
+
+function form(c) {
+  return '<span class="form" aria-label="10 derniers matchs">' + (c.last10 || []).map(g =>
+    `<i class="${g.g > 0 ? 'g' : g.xg >= 0.4 ? 's' : ''}"></i>`).join('') + '</span>';
+}
+function goalieBadge(c) {
+  const g = D.games.find(x => x.home.abbrev === c.opp || x.away.abbrev === c.opp);
+  const s = g && (g.home.abbrev === c.opp ? g.home : g.away).goalie;
+  return s ? `<span class="badge ${s.status === 'confirmé' ? 'b-ok' : 'b-pr'}">Gardien ${esc(s.status)}</span>` : '';
+}
+function rowHTML(c, i) {
+  return `<a class="row" href="#joueur-${c.id}">
+    <span class="rk H">${i + 1}</span>
+    <span><div class="nm">${esc(c.name)}</div>
+      <div class="meta"><span>${c.team} ${c.home ? 'vs' : '@'} ${c.opp} · ${esc(c.pos)}</span>${goalieBadge(c)}</div>${form(c)}</span>
+    <span><div class="pct H">${pc(c.prob)}</div><div class="trend">${nf(c.xg, 2)} xG</div></span></a>`;
+}
+
+function viewTop() {
+  const [st, cls] = STAGE[D.stage] || STAGE.update;
+  let list = D.top.map(player).filter(Boolean);
+  if (filter !== 'all') list = Object.values(D.players).filter(c => (filter === 'D') === (c.pos === 'D')).sort((a, b) => b.prob - a.prob).slice(0, 25);
+  app.innerHTML = `<header>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:10px">
+      <div><div class="sub">${night()} · ${D.games.length} match${D.games.length > 1 ? 's' : ''}</div><h1 class="H">Buteurs du soir</h1></div>
+      <span class="badge ${cls}">${st} · ${updated()}</span></div>
+    <div class="redline"></div>
+    <div class="chips">${[['all', 'Tous'], ['F', 'Attaquants'], ['D', 'Défenseurs']].map(([k, l]) =>
+      `<button class="chip ${filter === k ? 'on' : ''}" data-f="${k}">${l}</button>`).join('')}</div></header>
+    <main>${D.games.length ? list.map(rowHTML).join('') : '<p class="empty">Pas de match NHL cette nuit.</p>'}
+    <p class="note">% = probabilité de marquer au moins un but. Barrettes : 10 derniers matchs (rouge = but, bleu = grosse occasion). ${D.books ? '' : 'Cotes bookmakers non connectées.'}</p></main>`;
+  app.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { filter = b.dataset.f; viewTop(); });
+}
+
+function detailText(c, param) {
+  const d = c.detail || {};
+  return {
+    'Forme récente': `${nf(c.last10?.slice(-5).reduce((s, g) => s + (g.xg || 0), 0) / 5, 2)} xG/m sur 5 matchs`,
+    'Talent de finition': d.finish == null ? '' : `${d.finish >= 0 ? '+' : ''}${nf(d.finish * 100, 0)} % de buts vs xG (3 saisons)`,
+    'Temps de glace projeté': `${nf(d.toi)} min sur les 3 derniers matchs`,
+    'Supériorité numérique': `${nf(d.pp_toi)} min en PP par match`,
+    'Ligne & coéquipiers': `${nf(d.onice, 2)} xG pour /60 quand il joue`,
+    'Poste & expérience': c.pos === 'D' ? 'défenseur' : 'attaquant',
+    'Gardien probable': d.goalie ? `${esc(d.goalie)} · ${d.goalie_gsax >= 0 ? '+' : ''}${nf(d.goalie_gsax, 2)} buts évités/m` : 'inconnu',
+    'Fatigue du gardien': '', 'Défense adverse': `${nf(d.opp_xga, 2)} xG concédés/match`,
+    'Discipline adverse': `${nf(d.opp_pen)} pénalités/match`, 'Tirs bloqués adverses': `${nf(d.opp_blocks)} tirs bloqués/match`,
+    'Domicile / extérieur': c.home ? 'à domicile' : "à l'extérieur",
+    'Repos / back-to-back': `${nf(d.rest, 0)} j de repos · adversaire ${nf(d.opp_rest, 0)} j`,
+    'Déplacement': `${nf(d.travel, 0)} km depuis le dernier match`,
+    'Absences dans l\'équipe': d.missing > 0 ? `${nf(d.missing, 0)} min de glace à redistribuer` : 'effectif complet',
+    'Filet désert & rapport de force': 'écart de niveau entre les équipes',
+    'Historique face-à-face': 'poids très faible', 'Total de buts de l\'équipe': 'écart avec notre estimation',
+  }[param] || '';
+}
+function factorHTML(c, f) {
+  const d = Math.max(-48, Math.min(48, (f.mult - 1) * 160));
+  const col = f.mult > 1.005 ? 'var(--up)' : f.mult < 0.995 ? 'var(--down)' : 'var(--mute)';
+  return `<div class="f"><span><b style="font-weight:600">${esc(f.param)}</b><small>${detailText(c, f.param)}</small></span>
+    <span class="fb"><i style="left:${d >= 0 ? 50 : 50 + d}%;width:${Math.max(2, Math.abs(d))}%;background:${col}"></i></span>
+    <span style="text-align:right;font-weight:700;color:${col}">×${nf(f.mult, 2)}</span></div>`;
+}
+
+function viewPlayer(id) {
+  const c = player(id);
+  if (!c) return viewTop();
+  const deg = c.prob * 360, s = c.stats || {}, z = c.zones || [0, 0, 0];
+  const groups = ['player', 'opp', 'ctx', 'book'].map(g => {
+    const fs = c.factors.filter(f => f.group === g).sort((a, b) => Math.abs(b.mult - 1) - Math.abs(a.mult - 1));
+    if (!fs.length) return '';
+    const t = fs.reduce((p, f) => p * f.mult, 1);
+    return `<div class="gh"><span>${GROUPS[g]}</span><span style="font-size:12px;font-weight:700;color:${t >= 1 ? 'var(--up)' : 'var(--down)'}">total ×${nf(t, 2)}</span></div>` + fs.map(f => factorHTML(c, f)).join('');
+  }).join('');
+  const mx = Math.max(0.3, ...c.last10.map(g => g.xg || 0));
+  app.innerHTML = `<header>${back('#top', 'Top du soir')}
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+      <div><h1 class="H" style="font-size:34px">${esc(c.name)}</h1>
+        <div class="sub">${esc(c.pos)} · ${c.team} ${c.home ? 'vs' : '@'} ${c.opp} · rang ${c.rank} ce soir</div></div>
+      <div class="ring" style="background:conic-gradient(var(--red) 0 ${deg}deg,rgba(255,255,255,.18) ${deg}deg)"><div>
+        <span class="H" style="font-size:30px;line-height:1">${pc(c.prob)}</span><span style="font-size:10px;opacity:.8">de marquer</span></div></div></div>
+    <div class="tiles" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-top:12px">
+      <span class="tile"><b>${nf(c.xg, 2)}</b><span>buts attendus</span></span>
+      <span class="tile"><b>${pc(c.p2)}</b><span>2 buts ou plus</span></span>
+      <span class="tile"><b>${s.goals ?? '–'} en ${s.gp ?? '–'}</b><span>buts cette saison</span></span></div></header>
+  <main>
+    <section class="card"><h2 class="H">Pourquoi ${pc(c.prob)}</h2>
+      <p class="note" style="margin:-4px 0 10px">On part de sa base, puis chaque paramètre fait monter (vert) ou baisser (rouge) ses chances.</p>
+      <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg);border-radius:10px;padding:9px 10px;font-size:13px">
+        <span><b>Base du joueur</b><small style="display:block;color:var(--mute)">volume, qualité de ses tirs, niveau habituel</small></span>
+        <span class="H big" style="font-size:22px;color:var(--blue)">${pc(c.base)}</span></div>
+      ${groups}
+      <div style="display:flex;justify-content:space-between;border-top:1px solid var(--line);margin-top:12px;padding-top:10px;font-size:13.5px">
+        <span>Après tous les paramètres</span><b>${pc(c.prob)}</b></div></section>
+    <section class="card"><div style="display:flex;justify-content:space-between;align-items:baseline"><h2 class="H" style="margin:0">10 derniers matchs</h2><span class="note" style="margin:0">barre = xG · point = but</span></div>
+      <div class="bars">${c.last10.map(g => `<span><b style="background:${g.g > 0 ? 'var(--red)' : 'transparent'}"></b><i style="height:${Math.round((g.xg || 0) / mx * 58) + 2}px"></i></span>`).join('')}</div>
+      <div class="tiles" style="margin-top:12px">${[[nf(s.sog_pg), 'tirs cadrés/m'], [nf(s.fen_pg), 'tentatives/m'], [nf(s.toi), 'min de glace'], [nf(s.pp_toi), 'min en PP'],
+        [nf(s.sh_pct) + ' %', 'réussite'], [nf(s.hd_pg), 'tirs dangereux/m'], [nf(s.xg_pg, 2), 'xG/match'], [s.goals ?? '–', 'buts saison']]
+        .map(([v, l]) => `<span class="tile"><b>${v}</b><span>${l}</span></span>`).join('')}</div></section>
+    <section class="card"><h2 class="H">D'où viennent ses tirs</h2>
+      <div class="tiles" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+        <span class="tile" style="background:var(--blue);color:#fff;align-items:center"><b>${z[0]} %</b><span style="color:#fff">enclave (danger élevé)</span></span>
+        <span class="tile" style="background:#7fa0dc;color:#0b1530;align-items:center"><b>${z[1]} %</b><span style="color:#0b1530">cercles (moyen)</span></span>
+        <span class="tile" style="align-items:center"><b>${z[2]} %</b><span>point (faible)</span></span></div></section>
+  </main>`;
+}
+
+function viewGames() {
+  app.innerHTML = `<header><div class="sub">${night()}</div><h1 class="H">Matchs de la nuit</h1></header><main>` +
+    (D.games.length ? D.games.map(g => {
+      const pw = g.home_win;
+      return `<a class="card" href="#match-${g.id}" style="display:block">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span class="H" style="font-size:28px">${g.away.abbrev} <span style="color:var(--mute);font-size:18px">@</span> ${g.home.abbrev}</span>
+          <span class="note" style="margin:0">${hour(g.start)}</span></div>
+        <div style="display:flex;height:6px;border-radius:3px;overflow:hidden;margin:8px 0 4px"><span style="width:${(1 - pw) * 100}%;background:#9fb6e8"></span><span style="width:${pw * 100}%;background:var(--red)"></span></div>
+        <div class="meta" style="justify-content:space-between"><span>${nf(g.away.xg, 1)} buts attendus</span><span>${nf(g.home.xg, 1)} buts attendus</span></div></a>`;
+    }).join('') : '<p class="empty">Pas de match NHL cette nuit.</p>') + '</main>';
+}
+
+function viewMatch(id) {
+  const g = D.games.find(x => String(x.id) === id);
+  if (!g) return viewGames();
+  const gk = s => s.goalie ? `<div class="card" style="margin:0;padding:10px 12px"><div class="note" style="margin:0">Gardien ${s.abbrev}</div>
+    <div style="font-weight:600;font-size:14px">${esc(s.goalie.name)}</div>
+    <div class="note" style="margin:0 0 4px">${Math.round(s.goalie.share * 100)} % des derniers départs</div>
+    <span class="badge ${s.goalie.status === 'confirmé' ? 'b-ok' : 'b-pr'}">${s.goalie.status === 'confirmé' ? 'Confirmé' : 'Probable'}</span></div>` : '<div></div>';
+  const cell = (r, side) => {
+    const v = r[side], o = r[side === 'home' ? 'away' : 'home'];
+    const best = v != null && o != null && (r.better === 'high' ? v > o : v < o);
+    return `<td style="font-weight:${best ? 700 : 400}">${v == null ? '–' : nf(v, r.label.includes('km') || r.label.includes('Jours') ? 0 : 2)}</td>`;
+  };
+  app.innerHTML = `<header>${back('#matchs', 'Matchs')}
+    <div class="sub" style="display:flex;justify-content:space-between"><span>${hour(g.start)} (Paris)</span><span>${esc(g.venue)}</span></div>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;margin-top:8px">
+      <div><div class="H" style="font-size:44px;line-height:1">${g.away.abbrev}</div><div class="sub">${nf(g.away.xg, 1)} buts attendus${g.away.book ? ' · bookmakers ' + nf(g.away.book, 1) : ''}</div></div>
+      <span class="H" style="opacity:.7;font-size:22px">@</span>
+      <div style="text-align:right"><div class="H" style="font-size:44px;line-height:1">${g.home.abbrev}</div><div class="sub">${nf(g.home.xg, 1)} buts attendus${g.home.book ? ' · bookmakers ' + nf(g.home.book, 1) : ''}</div></div></div>
+    <div style="display:flex;height:6px;border-radius:3px;overflow:hidden;margin-top:10px"><span style="width:${(1 - g.home_win) * 100}%;background:#9fb6e8"></span><span style="width:${g.home_win * 100}%;background:var(--red)"></span></div>
+    <div class="sub" style="display:flex;justify-content:space-between;margin-top:4px"><span>${pc(1 - g.home_win)} victoire</span><span>${pc(g.home_win)} victoire</span></div></header>
+  <main>
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px">${gk(g.away)}${gk(g.home)}</div>
+    <section class="card"><table class="cmp"><tr><td style="border:0;color:var(--mute)">${g.away.abbrev}</td><td style="border:0">20 derniers matchs</td><td style="border:0;color:var(--mute)">${g.home.abbrev}</td></tr>
+      ${g.ctx.map(r => `<tr>${cell(r, 'away')}<td>${r.label}</td>${cell(r, 'home')}</tr>`).join('')}</table></section>
+    <h2 class="H" style="margin:4px 4px 8px;font-size:21px">Buteurs probables</h2>
+    ${g.players.map(player).filter(Boolean).map(rowHTML).join('')}</main>`;
+}
+
+function viewPrecision() {
+  const live = P.source === 'live', b = live ? P : (P.backtest || M.backtest);
+  const head = b && b.calibration && b.calibration.length ? b.calibration[Math.min(3, b.calibration.length - 1)] : null;
+  const title = head ? `Quand l'app dit ${Math.round(head.pred * 100)} %, ils marquent ${Math.round(head.obs * 100)} % du temps` : 'Fiabilité du modèle';
+  app.innerHTML = `<header><div class="sub">${live ? `${P.nights} soirées réelles · ${P.n} prédictions` : b ? `Test sur ${b.nights} soirées passées (${b.period?.[0]} → ${b.period?.[1]})` : ''}</div>
+    <h1 class="H" style="font-size:34px">${title}</h1></header><main>
+    ${b ? `<section class="card"><h2 class="H">Prévu vs réel</h2><p class="note" style="margin:-4px 0 10px">Clair : probabilité annoncée · foncé : taux de buts observé</p>
+      ${b.calibration.map(c => `<div class="hbar" style="grid-template-columns:62px minmax(0,1fr) 40px"><span style="color:var(--mute)">${c.bin}</span>
+        <span style="display:flex;flex-direction:column;gap:3px"><span class="track" style="background:none"><i style="width:${c.pred * 180}%;background:#b9cbef"></i></span>
+        <span class="track" style="background:none"><i style="width:${c.obs * 180}%;background:var(--blue)"></i></span></span><b style="text-align:right">${Math.round(c.obs * 100)} %</b></div>`).join('')}</section>
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px">
+      <div class="card" style="margin:0"><div class="H big" style="font-size:30px;color:var(--blue)">${nf(b.top10_hits, 1)} / 10</div><p class="note" style="margin:4px 0 0">buteurs en moyenne dans le top 10 du soir</p></div>
+      <div class="card" style="margin:0"><div class="H" style="font-size:30px;color:var(--up)">${(g => g != null ? (g >= 0 ? '+' : '') + nf(g, 0) + ' %' : '–')(b.gain_vs_naive ?? (P.backtest || M.backtest)?.gain_vs_naive)}</div><p class="note" style="margin:4px 0 0">de buteurs trouvés en plus qu'un classement aux buts de la saison</p></div></div>` : '<p class="empty">Le modèle n\'a pas encore été entraîné.</p>'}
+    ${P.last_night ? `<section class="card"><h2 class="H">Dernière soirée · top 5</h2><table>${P.last_night.top.map(t =>
+      `<tr><td>${esc(t.name)}</td><td style="text-align:right;color:var(--mute)">${pc(t.prob)}</td><td style="text-align:right;width:84px"><span class="badge ${t.scored ? 'b-ok' : 'b-pr'}">${t.scored ? 'But ✓' : 'Raté'}</span></td></tr>`).join('')}</table></section>` : ''}
+    <p class="note">${live ? 'Calculé sur les prédictions finales réelles de l\'app.' : 'Chiffres du test sur les saisons passées, en attendant 10 soirées réelles.'}</p></main>`;
+}
+
+function viewModel() {
+  const imp = M.importance || [], mx = Math.max(1, ...imp.map(x => x.share));
+  app.innerHTML = `<header><h1 class="H" style="font-size:34px">Ce qui compte le plus pour marquer</h1>
+    <div class="sub">${imp.length} paramètres · appris sur les saisons ${esc(M.seasons || '')}</div></header><main>
+    <section class="card"><h2 class="H">Poids de chaque paramètre</h2><p class="note" style="margin:-4px 0 10px">Part de la prédiction expliquée par chacun, mesurée sur les matchs passés.</p>
+      ${imp.length ? imp.map(x => `<div class="hbar"><span>${esc(x.param)}</span><span class="track"><i style="width:${x.share / mx * 100}%;background:${GCOL[x.group]}"></i></span><b style="text-align:right">${nf(x.share)} %</b></div>`).join('') : '<p class="note">Disponible après le premier entraînement.</p>'}
+      <div class="meta" style="margin-top:10px;gap:12px">${Object.entries(GROUPS).map(([k, l]) => `<span style="display:flex;align-items:center;gap:5px"><i style="width:10px;height:10px;border-radius:2px;background:${GCOL[k]}"></i>${l}</span>`).join('')}</div></section>
+    <section class="card"><h2 class="H">Sources et mises à jour</h2><table>${[
+      ['API NHL officielle', 'calendrier, effectifs, gardiens, résultats', '3×/jour'],
+      ['MoneyPuck.com', 'xG par tir, temps de glace, gardiens, équipes', 'chaque nuit'],
+      ['Gardiens probables', 'déduits de la rotation et des back-to-back', '9h · 18h · 0h'],
+      ['Cotes bookmakers', D?.books ? 'total de buts par équipe' : 'non connectées (clé API absente)', '3×/jour'],
+      ['Résultats', 'chaque prédiction finale est vérifiée', 'chaque matin'],
+      ['Ré-entraînement', 'le modèle réapprend les poids', 'chaque lundi']]
+      .map(([n, d, t]) => `<tr><td><b style="font-weight:600">${n}</b><br><span class="note" style="margin:0">${d}</span></td><td style="text-align:right;color:var(--mute);white-space:nowrap">${t}</td></tr>`).join('')}</table></section>
+    <p class="note">Données xG : MoneyPuck.com.</p></main>`;
+}
+}
+</script>
+</body>
+</html>
