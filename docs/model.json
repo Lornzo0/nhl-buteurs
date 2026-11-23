@@ -1,0 +1,152 @@
+{
+ "importance": [
+  {
+   "param": "Niveau habituel",
+   "group": "player",
+   "share": 63.4
+  },
+  {
+   "param": "Volume de tirs",
+   "group": "player",
+   "share": 11.4
+  },
+  {
+   "param": "Supériorité numérique",
+   "group": "player",
+   "share": 7.6
+  },
+  {
+   "param": "Temps de glace projeté",
+   "group": "player",
+   "share": 5.2
+  },
+  {
+   "param": "Poste & expérience",
+   "group": "player",
+   "share": 3.7
+  },
+  {
+   "param": "Qualité des tirs",
+   "group": "player",
+   "share": 1.4
+  },
+  {
+   "param": "Talent de finition",
+   "group": "player",
+   "share": 1.3
+  },
+  {
+   "param": "Défense adverse",
+   "group": "opp",
+   "share": 1.3
+  },
+  {
+   "param": "Filet désert & rapport de force",
+   "group": "ctx",
+   "share": 1.0
+  },
+  {
+   "param": "Gardien probable",
+   "group": "opp",
+   "share": 0.8
+  },
+  {
+   "param": "Historique face-à-face",
+   "group": "ctx",
+   "share": 0.5
+  },
+  {
+   "param": "Forme récente",
+   "group": "player",
+   "share": 0.3
+  },
+  {
+   "param": "Ligne & coéquipiers",
+   "group": "player",
+   "share": 0.3
+  },
+  {
+   "param": "Discipline adverse",
+   "group": "opp",
+   "share": 0.3
+  },
+  {
+   "param": "Tirs bloqués adverses",
+   "group": "opp",
+   "share": 0.3
+  },
+  {
+   "param": "Domicile / extérieur",
+   "group": "ctx",
+   "share": 0.3
+  },
+  {
+   "param": "Repos / back-to-back",
+   "group": "ctx",
+   "share": 0.3
+  },
+  {
+   "param": "Déplacement",
+   "group": "ctx",
+   "share": 0.3
+  },
+  {
+   "param": "Absences dans l'équipe",
+   "group": "ctx",
+   "share": 0.3
+  },
+  {
+   "param": "Fatigue du gardien",
+   "group": "opp",
+   "share": 0.2
+  }
+ ],
+ "backtest": {
+  "n": 48777,
+  "nights": 178,
+  "logloss": 0.3951,
+  "logloss_naive": 0.4013,
+  "top10_naive": 3.61,
+  "gain_vs_naive": 3.9,
+  "auc": 0.703,
+  "brier": 0.1211,
+  "top10_hits": 3.75,
+  "calibration": [
+   {
+    "bin": "5–15 %",
+    "pred": 0.097,
+    "obs": 0.096,
+    "n": 21573
+   },
+   {
+    "bin": "15–25 %",
+    "pred": 0.193,
+    "obs": 0.198,
+    "n": 12775
+   },
+   {
+    "bin": "25–35 %",
+    "pred": 0.294,
+    "obs": 0.289,
+    "n": 6437
+   },
+   {
+    "bin": "35–45 %",
+    "pred": 0.385,
+    "obs": 0.381,
+    "n": 1957
+   },
+   {
+    "bin": "45 %+",
+    "pred": 0.467,
+    "obs": 0.494,
+    "n": 87
+   }
+  ],
+  "period": [
+   "2025-11-20",
+   "2026-11-22"
+  ]
+ },
+ "seasons": "2021-2027"
+}
