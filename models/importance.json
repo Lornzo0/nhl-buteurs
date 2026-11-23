@@ -2,92 +2,57 @@
  {
   "param": "Niveau habituel",
   "group": "player",
-  "share": 63.4
- },
- {
-  "param": "Volume de tirs",
-  "group": "player",
-  "share": 11.4
+  "share": 65.8
  },
  {
   "param": "Supériorité numérique",
   "group": "player",
-  "share": 7.6
+  "share": 10.6
+ },
+ {
+  "param": "Volume de tirs",
+  "group": "player",
+  "share": 7.7
  },
  {
   "param": "Temps de glace projeté",
   "group": "player",
-  "share": 5.2
+  "share": 5.4
  },
  {
   "param": "Poste & expérience",
   "group": "player",
-  "share": 3.7
- },
- {
-  "param": "Qualité des tirs",
-  "group": "player",
-  "share": 1.4
+  "share": 3.1
  },
  {
   "param": "Talent de finition",
   "group": "player",
-  "share": 1.3
+  "share": 1.2
+ },
+ {
+  "param": "Confiance & séries",
+  "group": "player",
+  "share": 1.1
  },
  {
   "param": "Défense adverse",
   "group": "opp",
-  "share": 1.3
+  "share": 1.0
  },
  {
-  "param": "Filet désert & rapport de force",
-  "group": "ctx",
-  "share": 1.0
+  "param": "Qualité des tirs",
+  "group": "player",
+  "share": 0.9
  },
  {
   "param": "Gardien probable",
   "group": "opp",
-  "share": 0.8
+  "share": 0.7
  },
  {
-  "param": "Historique face-à-face",
+  "param": "Filet désert & rapport de force",
   "group": "ctx",
-  "share": 0.5
- },
- {
-  "param": "Forme récente",
-  "group": "player",
-  "share": 0.3
- },
- {
-  "param": "Ligne & coéquipiers",
-  "group": "player",
-  "share": 0.3
- },
- {
-  "param": "Discipline adverse",
-  "group": "opp",
-  "share": 0.3
- },
- {
-  "param": "Tirs bloqués adverses",
-  "group": "opp",
-  "share": 0.3
- },
- {
-  "param": "Domicile / extérieur",
-  "group": "ctx",
-  "share": 0.3
- },
- {
-  "param": "Repos / back-to-back",
-  "group": "ctx",
-  "share": 0.3
- },
- {
-  "param": "Déplacement",
-  "group": "ctx",
-  "share": 0.3
+  "share": 0.7
  },
  {
   "param": "Absences dans l'équipe",
@@ -95,8 +60,58 @@
   "share": 0.3
  },
  {
-  "param": "Fatigue du gardien",
+  "param": "Historique face-à-face",
+  "group": "ctx",
+  "share": 0.3
+ },
+ {
+  "param": "Forme récente",
+  "group": "player",
+  "share": 0.2
+ },
+ {
+  "param": "Ligne & coéquipiers",
+  "group": "player",
+  "share": 0.2
+ },
+ {
+  "param": "Tirs bloqués adverses",
   "group": "opp",
   "share": 0.2
+ },
+ {
+  "param": "Déplacement",
+  "group": "ctx",
+  "share": 0.2
+ },
+ {
+  "param": "Fatigue du gardien",
+  "group": "opp",
+  "share": 0.1
+ },
+ {
+  "param": "Discipline adverse",
+  "group": "opp",
+  "share": 0.1
+ },
+ {
+  "param": "Domicile / extérieur",
+  "group": "ctx",
+  "share": 0.1
+ },
+ {
+  "param": "Repos / back-to-back",
+  "group": "ctx",
+  "share": 0.1
+ },
+ {
+  "param": "Retour de blessure",
+  "group": "ctx",
+  "share": 0.0
+ },
+ {
+  "param": "Match contre son ancien club",
+  "group": "ctx",
+  "share": 0.0
  }
 ]
