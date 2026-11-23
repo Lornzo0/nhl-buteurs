@@ -8,6 +8,7 @@ sur les probabilités élevées où il y a peu d'exemples) pour que « 40 % » c
 """
 import json
 import math
+import os
 import pickle
 
 import lightgbm as lgb
@@ -45,33 +46,106 @@ def _monotone():
     return [MONOTONE.get(f, 0) for f in FEATURE_LIST]
 
 
+# Variantes testées chaque lundi : on garde celle qui prédit le mieux.
+VARIANTS = [
+    {"num_leaves": 15, "min_child_samples": 500},
+    {"num_leaves": 31, "min_child_samples": 300},
+    {"num_leaves": 63, "min_child_samples": 200, "learning_rate": 0.02},
+]
+HALF_LIFE_DAYS = 365          # un match d'il y a 1 an compte 2 fois moins qu'hier
+CHAMPION_DAYS = 28            # fenêtre de comparaison avec le modèle en place
+MIN_DUEL = int(os.environ.get("NHL_MIN_DUEL", 2000))   # prédictions minimum pour juger
+
+
+def recency(dates, ref):
+    return 0.5 ** ((ref - dates).dt.days.to_numpy() / HALF_LIFE_DAYS)
+
+
+def _fit(params, X, y, w, rounds, valid=None):
+    ds = lgb.Dataset(X, y, weight=w)
+    if valid is None:
+        return lgb.train(params, ds, rounds)
+    dv = lgb.Dataset(valid[0], valid[1], reference=ds)
+    return lgb.train(params, ds, rounds, valid_sets=[dv],
+                     callbacks=[lgb.early_stopping(100, verbose=False)])
+
+
+def champion_rows():
+    """Prédictions réelles (faites AVANT les matchs) du modèle en place, vérifiées."""
+    rows = []
+    for f in sorted(C.HISTORY.glob("*.json")):
+        d = json.loads(f.read_text())
+        if not d.get("graded"):
+            continue
+        for pid, c in d["players"].items():
+            if c.get("scored") is not None:
+                rows.append({"date": pd.Timestamp(d["date"]), "player_id": int(pid),
+                             "p_champ": c["prob"], "y_live": float(c["scored"] > 0)})
+    return pd.DataFrame(rows)
+
+
 def train(df):
     d = df[~df["future"] & df["f_games"].ge(5)].dropna(subset=["y"]).sort_values("date")
+    ref = d["date"].max()
     cut = d["date"].quantile(0.80)                    # 20 % les plus récents = validation
     tr, va = d[d["date"] < cut], d[d["date"] >= cut]
     print(f"  entraînement : {len(tr):,} matchs-joueurs · validation : {len(va):,}")
-    params = {**PARAMS, "monotone_constraints": _monotone()}
-    ds_tr = lgb.Dataset(tr[FEATURE_LIST], tr["y"])
-    ds_va = lgb.Dataset(va[FEATURE_LIST], va["y"], reference=ds_tr)
-    booster = lgb.train(params, ds_tr, 3000, valid_sets=[ds_va],
-                        callbacks=[lgb.early_stopping(100, verbose=False)])
-    raw = booster.predict(va[FEATURE_LIST], num_iteration=booster.best_iteration)
-    iso = Platt().fit(raw, va["y"].to_numpy())
-    p = iso.predict(raw)
 
-    # Référence naïve : la moyenne de buts du joueur sur la saison.
+    # 1. Tester les variantes, garder la meilleure sur la validation.
+    best = None
+    for v in VARIANTS:
+        params = {**PARAMS, **v, "monotone_constraints": _monotone()}
+        b = _fit(params, tr[FEATURE_LIST], tr["y"], recency(tr["date"], cut), 3000,
+                 (va[FEATURE_LIST], va["y"]))
+        raw = b.predict(va[FEATURE_LIST], num_iteration=b.best_iteration)
+        ll = log_loss(va["y"], np.clip(raw, 1e-4, 1 - 1e-4))
+        print(f"  variante {v} → {ll:.4f} ({b.best_iteration} arbres)")
+        if best is None or ll < best[0]:
+            best = (ll, params, b.best_iteration, raw, v)
+    _, params, n_iter, raw, variant = best
+
+    # 2. Calibration sur les matchs les plus récents.
+    cal = Platt().fit(raw, va["y"].to_numpy())
+    p = cal.predict(raw)
     naive = np.clip(1 - np.exp(-va["f_ixg_season"].fillna(0.15).to_numpy() * 1.05), 0.005, 0.9)
     metrics = evaluate(va.assign(p=p), naive)
+    metrics["variant"] = variant
 
-    # Ré-entraînement final sur tout l'historique, même nombre d'arbres.
-    final = lgb.train(params, lgb.Dataset(d[FEATURE_LIST], d["y"]), booster.best_iteration)
+    # 3. Duel avec le modèle en place, sur ses vraies prédictions des 4 dernières semaines.
+    champ = champion_rows()
+    duel = None
+    if len(champ):
+        win_start = champ["date"].max() - pd.Timedelta(days=CHAMPION_DAYS)
+        champ = champ[champ["date"] > win_start]
+        before = d[d["date"] <= win_start]
+        chal = _fit(params, before[FEATURE_LIST], before["y"], recency(before["date"], win_start), n_iter)
+        win = d[d["date"] > win_start].merge(champ, on=["date", "player_id"])
+        if len(win) >= MIN_DUEL:
+            p_chal = cal.predict(chal.predict(win[FEATURE_LIST]))
+            ll_chal, ll_champ = log_loss(win["y"], p_chal), log_loss(win["y"], np.clip(win["p_champ"], 1e-4, 1 - 1e-4))
+            duel = {"n": int(len(win)), "challenger": round(ll_chal, 4), "champion": round(ll_champ, 4),
+                    "winner": "challenger" if ll_chal <= ll_champ else "champion"}
+            print(f"  duel sur {len(win):,} prédictions réelles : nouveau {ll_chal:.4f} vs en place {ll_champ:.4f}")
+    metrics["duel"] = duel
+    feats_file = C.MODELS / "features.json"
+    same_feats = feats_file.exists() and json.loads(feats_file.read_text()) == FEATURE_LIST
+    if duel and duel["winner"] == "champion" and same_feats:
+        print("  → le modèle en place reste meilleur : on le garde.")
+        old = json.loads((C.MODELS / "metrics.json").read_text())
+        old["duel"] = duel
+        (C.MODELS / "metrics.json").write_text(json.dumps(old, ensure_ascii=False, indent=1))
+        return old, json.loads((C.MODELS / "importance.json").read_text())
+
+    # 4. Ré-entraînement final sur tout l'historique, matchs récents favorisés.
+    final = _fit(params, d[FEATURE_LIST], d["y"], recency(d["date"], ref), n_iter)
     imp = importance(final)
     C.MODELS.mkdir(exist_ok=True)
     final.save_model(str(C.MODELS / "lgbm.txt"))
     with open(C.MODELS / "calibration.pkl", "wb") as f:
-        pickle.dump(iso, f)
+        pickle.dump(cal, f)
     (C.MODELS / "metrics.json").write_text(json.dumps(metrics, ensure_ascii=False, indent=1))
     (C.MODELS / "importance.json").write_text(json.dumps(imp, ensure_ascii=False, indent=1))
+    feats_file.write_text(json.dumps(FEATURE_LIST))
     return metrics, imp
 
 

@@ -50,7 +50,7 @@ jobs:
             "0 5 * * 1")  T=train ;;
             *)            T="${{ inputs.task }}" ;;
           esac
-          if [ ! -f models/lgbm.txt ] && [ "$T" != "train" ]; then T="train_then_$T"; fi
+          if [ ! -f models/features.json ] && [ "$T" != "train" ]; then T="train_then_$T"; fi
           echo "task=$T" >> "$GITHUB_OUTPUT"
       - name: Lancer
         env:

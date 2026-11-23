@@ -15,7 +15,7 @@ import pandas as pd
 
 from . import config as C
 from . import sources as S
-from .features import build
+from .features import FEATURE_LIST, build
 from .model import load, predict
 from .train import load_history
 
@@ -74,6 +74,38 @@ def r(x, n=2):
     return None if x is None or (isinstance(x, float) and math.isnan(x)) else round(float(x), n)
 
 
+def mood(row):
+    """Badge 🔥 / ❄️ : ce que montrent ses tirs, sa glace et son rôle en PP."""
+    def v(c):
+        x = row.get(c)
+        return None if x is None or (isinstance(x, float) and math.isnan(x)) else float(x)
+    score, why = 0, []
+    fen, toi, pp = v("f_fen_trend"), v("f_toi_trend"), v("f_pp_trend")
+    if fen is not None and fen > 0.2:
+        score += 1; why.append(f"tire {round(fen * 100)} % de plus que d'habitude")
+    if fen is not None and fen < -0.25:
+        score -= 1; why.append(f"tire {round(-fen * 100)} % de moins que d'habitude")
+    if toi is not None and toi > 1.5:
+        score += 1; why.append(f"+{toi:.1f} min de glace sur ses 3 derniers matchs".replace(".", ","))
+    if toi is not None and toi < -1.5:
+        score -= 1; why.append(f"{toi:.1f} min de glace sur ses 3 derniers matchs".replace(".", ","))
+    if pp is not None and pp > 0.7:
+        score += 1; why.append("plus utilisé en supériorité numérique")
+    if pp is not None and pp < -0.7:
+        score -= 1; why.append("moins utilisé en supériorité numérique")
+    st, dr = v("f_goal_streak") or 0, v("f_drought") or 0
+    if st >= 2:
+        why.append(f"a marqué lors de ses {int(st)} derniers matchs")
+    if dr >= 8:
+        why.append(f"{int(dr)} matchs sans but")
+    if (v("f_since_return") or 10) < 3:
+        why.append("revient de blessure")
+    if v("f_vs_former"):
+        why.append("affronte son ancien club")
+    m = "hot" if score >= 2 else "cold" if score <= -2 else None
+    return {"mood": m, "why": why}
+
+
 def player_card(row, pred, hist, book_mult, rank):
     p0 = pred["p"]
     l = lam(p0) * book_mult
@@ -109,6 +141,7 @@ def player_card(row, pred, hist, book_mult, rank):
             "hd_pg": r(season["hd"].sum() / gp, 1), "xg_pg": r(season["ixg"].sum() / gp),
         },
         "zones": [round(s / tot * 100) for s in shots],
+        **mood(row),
     }
 
 
@@ -145,6 +178,8 @@ def run(day, stage):
     df = build(sk, gl, tm, pd.DataFrame(up), games, starters)
     fut = df[df["future"]].reset_index(drop=True)
     booster, iso = load()
+    if booster.feature_name() != FEATURE_LIST:
+        raise SystemExit("Le modèle ne correspond plus aux paramètres du code : lance « train ».")
     preds = predict(booster, iso, fut)
 
     # Ajustement bookmakers au niveau de l'équipe.

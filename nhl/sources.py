@@ -52,6 +52,7 @@ SCHEMA = {
         "fenwick": ["I_F_unblockedShotAttempts"], "hd": ["I_F_highDangerShots"],
         "md": ["I_F_mediumDangerShots"], "ld": ["I_F_lowDangerShots"],
         "onice_xgf": ["OnIce_F_xGoals"],
+        "points": ["I_F_points", "?"],          # "?" = colonne facultative
     },
     "goalies": {
         "player_id": ["playerId"], "name": ["name"], "game_id": ["gameId"],
@@ -73,6 +74,9 @@ def normalize(df, kind):
     out, missing = {}, []
     for key, cands in SCHEMA[kind].items():
         col = next((c for c in cands if c in df.columns), None)
+        if col is None and "?" in cands:
+            out[key] = pd.Series(float("nan"), index=df.index)
+            continue
         if col is None:
             missing.append(f"{key} ({' / '.join(cands)})")
         else:

@@ -69,6 +69,8 @@ nav{position:fixed;left:0;right:0;bottom:0;display:grid;grid-template-columns:re
 nav a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--mute);min-height:44px}
 nav a.on{color:var(--blue);font-weight:600}@media(prefers-color-scheme:dark){nav a.on{color:#8fb0ff}}
 .note{font-size:12px;color:var(--mute);margin:6px 4px}
+.mood{font-size:15px;line-height:1}
+.why{display:flex;flex-direction:column;gap:3px;margin-top:10px;font-size:13px}
 .empty{text-align:center;color:var(--mute);padding:50px 10px}
 </style>
 </head>
@@ -116,6 +118,7 @@ function form(c) {
   return '<span class="form" aria-label="10 derniers matchs">' + (c.last10 || []).map(g =>
     `<i class="${g.g > 0 ? 'g' : g.xg >= 0.4 ? 's' : ''}"></i>`).join('') + '</span>';
 }
+const moodIcon = c => c.mood === 'hot' ? '<span class="mood" title="En confiance">🔥 </span>' : c.mood === 'cold' ? '<span class="mood" title="En difficulté">❄️ </span>' : '';
 function goalieBadge(c) {
   const g = D.games.find(x => x.home.abbrev === c.opp || x.away.abbrev === c.opp);
   const s = g && (g.home.abbrev === c.opp ? g.home : g.away).goalie;
@@ -124,7 +127,7 @@ function goalieBadge(c) {
 function rowHTML(c, i) {
   return `<a class="row" href="#joueur-${c.id}">
     <span class="rk H">${i + 1}</span>
-    <span><div class="nm">${esc(c.name)}</div>
+    <span><div class="nm">${moodIcon(c)}${esc(c.name)}</div>
       <div class="meta"><span>${c.team} ${c.home ? 'vs' : '@'} ${c.opp} · ${esc(c.pos)}</span>${goalieBadge(c)}</div>${form(c)}</span>
     <span><div class="pct H">${pc(c.prob)}</div><div class="trend">${nf(c.xg, 2)} xG</div></span></a>`;
 }
@@ -141,7 +144,7 @@ function viewTop() {
     <div class="chips">${[['all', 'Tous'], ['F', 'Attaquants'], ['D', 'Défenseurs']].map(([k, l]) =>
       `<button class="chip ${filter === k ? 'on' : ''}" data-f="${k}">${l}</button>`).join('')}</div></header>
     <main>${D.games.length ? list.map(rowHTML).join('') : '<p class="empty">Pas de match NHL cette nuit.</p>'}
-    <p class="note">% = probabilité de marquer au moins un but. Barrettes : 10 derniers matchs (rouge = but, bleu = grosse occasion). ${D.books ? '' : 'Cotes bookmakers non connectées.'}</p></main>`;
+    <p class="note">% = probabilité de marquer au moins un but. Barrettes : 10 derniers matchs (rouge = but, bleu = grosse occasion). 🔥 en confiance · ❄️ en difficulté (tirs, glace, rôle en PP). ${D.books ? '' : 'Cotes bookmakers non connectées.'}</p></main>`;
   app.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { filter = b.dataset.f; viewTop(); });
 }
 
@@ -162,7 +165,10 @@ function detailText(c, param) {
     'Déplacement': `${nf(d.travel, 0)} km depuis le dernier match`,
     'Absences dans l\'équipe': d.missing > 0 ? `${nf(d.missing, 0)} min de glace à redistribuer` : 'effectif complet',
     'Filet désert & rapport de force': 'écart de niveau entre les équipes',
-    'Historique face-à-face': 'poids très faible', 'Total de buts de l\'équipe': 'écart avec notre estimation',
+    'Historique face-à-face': 'poids très faible',
+    'Confiance & séries': (c.why || []).filter(w => /tire|glace|supériorité|derniers matchs|sans but/.test(w)).join(' · ') || 'rien de particulier',
+    'Retour de blessure': (c.why || []).includes('revient de blessure') ? 'revient de blessure' : 'pas concerné',
+    'Match contre son ancien club': (c.why || []).includes('affronte son ancien club') ? 'oui' : 'non', 'Total de buts de l\'équipe': 'écart avec notre estimation',
   }[param] || '';
 }
 function factorHTML(c, f) {
@@ -187,7 +193,8 @@ function viewPlayer(id) {
   app.innerHTML = `<header>${back('#top', 'Top du soir')}
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
       <div><h1 class="H" style="font-size:34px">${esc(c.name)}</h1>
-        <div class="sub">${esc(c.pos)} · ${c.team} ${c.home ? 'vs' : '@'} ${c.opp} · rang ${c.rank} ce soir</div></div>
+        <div class="sub">${esc(c.pos)} · ${c.team} ${c.home ? 'vs' : '@'} ${c.opp} · rang ${c.rank} ce soir</div>
+        ${c.mood ? `<span class="badge" style="margin-top:6px">${c.mood === 'hot' ? '🔥 En confiance' : '❄️ En difficulté'}</span>` : ''}</div>
       <div class="ring" style="background:conic-gradient(var(--red) 0 ${deg}deg,rgba(255,255,255,.18) ${deg}deg)"><div>
         <span class="H" style="font-size:30px;line-height:1">${pc(c.prob)}</span><span style="font-size:10px;opacity:.8">de marquer</span></div></div></div>
     <div class="tiles" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-top:12px">
@@ -195,6 +202,7 @@ function viewPlayer(id) {
       <span class="tile"><b>${pc(c.p2)}</b><span>2 buts ou plus</span></span>
       <span class="tile"><b>${s.goals ?? '–'} en ${s.gp ?? '–'}</b><span>buts cette saison</span></span></div></header>
   <main>
+    ${(c.why || []).length ? `<section class="card"><h2 class="H">Dynamique du moment</h2><div class="why" style="margin-top:0">${c.why.map(w => `<span>• ${esc(w)}</span>`).join('')}</div></section>` : ''}
     <section class="card"><h2 class="H">Pourquoi ${pc(c.prob)}</h2>
       <p class="note" style="margin:-4px 0 10px">On part de sa base, puis chaque paramètre fait monter (vert) ou baisser (rouge) ses chances.</p>
       <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg);border-radius:10px;padding:9px 10px;font-size:13px">

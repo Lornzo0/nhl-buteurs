@@ -42,6 +42,15 @@ FEATURES = {
     "t_missing_toi":  ("ctx", "Absences dans l'équipe"),
     "t_strength":     ("ctx", "Filet désert & rapport de force"),
     "f_h2h":          ("ctx", "Historique face-à-face"),
+    # Confiance : séries, disettes, et surtout ce que fait l'entraîneur.
+    "f_goal_streak":  ("player", "Confiance & séries"),
+    "f_drought":      ("player", "Confiance & séries"),
+    "f_pts_streak":   ("player", "Confiance & séries"),
+    "f_fen_trend":    ("player", "Confiance & séries"),
+    "f_toi_trend":    ("player", "Confiance & séries"),
+    "f_pp_trend":     ("player", "Confiance & séries"),
+    "f_since_return": ("ctx", "Retour de blessure"),
+    "f_vs_former":    ("ctx", "Match contre son ancien club"),
 }
 FEATURE_LIST = list(FEATURES)
 # Contraintes de bon sens : plus de tirs / de glace / une défense adverse plus
@@ -129,7 +138,47 @@ def add_player_features(df):
     hn = gh.cumcount()
     rate = df["f_ixg_ewm"].fillna(0.1)
     df["f_h2h"] = (hg + 5 * rate) / (hn + 5) - rate
+    add_confidence(df, g)
     return df
+
+
+def _run(prev_flag, keys):
+    """Longueur de la série en cours (matchs consécutifs où prev_flag est vrai)."""
+    f = prev_flag.fillna(False).astype(bool)
+    block = (~f).groupby(keys).cumsum()
+    return f.groupby([keys, block]).cumsum()
+
+
+def add_confidence(df, g):
+    pid = df["player_id"]
+    prev_goals = g["goals"].shift(1)
+    df["f_goal_streak"] = _run(prev_goals >= 1, pid)
+    df["f_drought"] = _run(prev_goals == 0, pid).clip(upper=30)
+    if "points" in df and df["points"].notna().any():
+        df["f_pts_streak"] = _run(g["points"].shift(1) >= 1, pid)
+    else:
+        df["f_pts_streak"] = np.nan
+
+    # Tendances : il tire plus ? l'entraîneur lui donne plus de glace / de PP ?
+    fen_l5 = _prev(g, "fenwick", lambda s: s.rolling(5, min_periods=3).mean())
+    df["f_fen_trend"] = fen_l5 / df["f_fen_pg"].replace(0, np.nan) - 1
+    df["f_toi_trend"] = df["f_toi_l3"] - df["f_toi_ewm"]
+    pp_l3 = _prev(g, "pp_toi", lambda s: s.rolling(3, min_periods=1).mean())
+    df["f_pp_trend"] = pp_l3 - df["f_pp_toi"]
+
+    # Retour de blessure : nombre de matchs depuis une absence de 12 jours ou plus.
+    gap = g["date"].diff().dt.days
+    same_season = g["season"].diff().eq(0)
+    back = (gap >= 12) & same_season
+    seg = back.astype(int).groupby(pid).cumsum()
+    since = df.groupby([pid, seg]).cumcount()
+    df["f_since_return"] = np.where(seg > 0, since, 10).clip(max=10)
+
+    # Ancien club : a-t-il déjà joué POUR l'équipe qu'il affronte ?
+    first = (df[~df["future"]].groupby(["player_id", "team"])["date"].min()
+             .rename("first_with_opp").reset_index().rename(columns={"team": "opp"}))
+    m = df[["player_id", "opp", "date"]].merge(first, on=["player_id", "opp"], how="left")
+    df["f_vs_former"] = (m["first_with_opp"].notna() & (m["first_with_opp"] < m["date"])).astype(int).to_numpy()
 
 
 # ------------------------------------------------------------------ équipes
