@@ -65,12 +65,16 @@ table{width:100%;border-collapse:collapse;font-size:13px}td{padding:6px 0;border
 .hbar span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .track{height:9px;background:var(--ice);border-radius:4px;overflow:hidden}.track i{display:block;height:100%;border-radius:4px}
 .back{display:inline-flex;align-items:center;gap:4px;font-size:14px;min-height:32px;color:#fff;margin-bottom:6px}
-nav{position:fixed;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--card);border-top:1px solid var(--line);padding:8px 0 calc(8px + var(--bot))}
+nav{position:fixed;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:var(--card);border-top:1px solid var(--line);padding:8px 0 calc(8px + var(--bot))}
 nav a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--mute);min-height:44px}
 nav a.on{color:var(--blue);font-weight:600}@media(prefers-color-scheme:dark){nav a.on{color:#8fb0ff}}
 .note{font-size:12px;color:var(--mute);margin:6px 4px}
 .mood{font-size:15px;line-height:1}
 .why{display:flex;flex-direction:column;gap:3px;margin-top:10px;font-size:13px}
+.tk{border-radius:18px;overflow:hidden;margin-bottom:12px;background:var(--card);border:1px solid var(--line)}
+.tk-h{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;color:#fff}
+.tk-p{display:grid;grid-template-columns:minmax(0,1fr) 52px;gap:8px;align-items:center;padding:9px 14px;border-top:1px dashed var(--line)}
+.tk-f{display:flex;justify-content:space-between;align-items:flex-end;padding:12px 14px;border-top:2px dashed var(--line);background:var(--bg)}
 .empty{text-align:center;color:var(--mute);padding:50px 10px}
 </style>
 </head>
@@ -79,6 +83,7 @@ nav a.on{color:var(--blue);font-weight:600}@media(prefers-color-scheme:dark){nav
 <nav id="nav">
  <a href="#top" data-k="top"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19h16M7 15l3-4 3 2 4-6"/></svg>Ce soir</a>
  <a href="#matchs" data-k="matchs"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><ellipse cx="12" cy="9" rx="7" ry="3"/><path d="M5 9v4c0 1.7 3.1 3 7 3s7-1.3 7-3V9"/></svg>Matchs</a>
+ <a href="#tickets" data-k="tickets"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7a2 2 0 0 0 2-2h12a2 2 0 0 0 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 0-2 2H6a2 2 0 0 0-2-2v-3a2 2 0 0 0 0-4z"/><path d="M14 5v14" stroke-dasharray="2 2"/></svg>Tickets</a>
  <a href="#fiabilite" data-k="fiabilite"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/></svg>Fiabilité</a>
  <a href="#modele" data-k="modele"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Modèle</a>
 </nav>
@@ -105,7 +110,7 @@ function route() {
   document.querySelectorAll('nav a').forEach(a => a.classList.toggle('on', a.dataset.k === (k === 'joueur' ? 'top' : k === 'match' ? 'matchs' : k)));
   scrollTo(0, 0);
   if (!D && k !== 'modele' && k !== 'fiabilite') { app.innerHTML = '<p class="empty">Chargement… ou pas encore de données : lance la première mise à jour.</p>'; return; }
-  ({top: viewTop, joueur: () => viewPlayer(id), matchs: viewGames, match: () => viewMatch(id), fiabilite: viewPrecision, modele: viewModel}[k] || viewTop)();
+  ({top: viewTop, joueur: () => viewPlayer(id), matchs: viewGames, match: () => viewMatch(id), fiabilite: viewPrecision, modele: viewModel, tickets: viewTickets}[k] || viewTop)();
 }
 
 const player = id => D.players[id];
@@ -263,6 +268,50 @@ function viewMatch(id) {
       ${g.ctx.map(r => `<tr>${cell(r, 'away')}<td>${r.label}</td>${cell(r, 'home')}</tr>`).join('')}</table></section>
     <h2 class="H" style="margin:4px 4px 8px;font-size:21px">Buteurs probables</h2>
     ${g.players.map(player).filter(Boolean).map(rowHTML).join('')}</main>`;
+}
+
+
+function pickTicket(n, used) {
+  // Les n joueurs les plus probables, au plus un par équipe (diversifie les matchs).
+  const out = [], teams = new Set();
+  for (const id of Object.keys(D.players).sort((a, b) => D.players[b].prob - D.players[a].prob)) {
+    const c = D.players[id];
+    if (teams.has(c.team) || used.has(c.id)) continue;
+    out.push(c); teams.add(c.team);
+    if (out.length === n) break;
+  }
+  return out;
+}
+function ticketHTML(t) {
+  const p = t.players.reduce((a, c) => a * c.prob, 1);
+  const odds = (1 / p).toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  return `<section class="tk"><div class="tk-h" style="background:${t.color}">
+      <span><span class="H" style="font-size:24px;display:block;line-height:1">${t.title}</span><span style="font-size:12.5px;opacity:.9">${t.sub}</span></span>
+      <span class="badge" style="background:rgba(255,255,255,.18);color:#fff">${t.level}</span></div>
+    ${t.players.map(c => `<a class="tk-p" href="#joueur-${c.id}"><span><div class="nm">${moodIcon(c)}${esc(c.name)}</div>
+      <div class="meta">${c.team} ${c.home ? 'vs' : '@'} ${c.opp}</div></span>
+      <span class="H" style="font-size:24px;text-align:right;color:var(--blue)">${pc(c.prob)}</span></a>`).join('')}
+    <div class="tk-f"><span><span class="note" style="margin:0;display:block">Chance que tout passe</span>
+      <span class="H big" style="font-size:36px;line-height:1;color:var(--blue)">${(p * 100).toLocaleString('fr-FR', {maximumFractionDigits: 1})} %</span></span>
+      <span style="text-align:right"><span class="note" style="margin:0;display:block">Cote juste</span><span class="H" style="font-size:26px">${odds}</span></span></div></section>`;
+}
+function viewTickets() {
+  const [st, cls] = STAGE[D.stage] || STAGE.update;
+  if (!D.games.length) { app.innerHTML = '<header><h1 class="H">Tickets</h1></header><main><p class="empty">Pas de match NHL cette nuit.</p></main>'; return; }
+  const none = new Set();
+  const tickets = [
+    {title: 'Solo', sub: 'le joueur le plus probable de la nuit', level: 'Le plus sûr', color: '#16653a', players: pickTicket(1, none)},
+    {title: 'Duo', sub: '2 joueurs de 2 équipes différentes', level: 'Risque moyen', color: '#0b2a6b', players: pickTicket(2, none)},
+    {title: 'Trio', sub: '3 joueurs de 3 équipes différentes', level: 'Risqué', color: '#d7132b', players: pickTicket(3, none)},
+  ];
+  app.innerHTML = `<header><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:10px">
+      <div><div class="sub">${night()}</div><h1 class="H">Tickets du soir</h1></div><span class="badge ${cls}">${st} · ${updated()}</span></div></header>
+    <main>${tickets.map(ticketHTML).join('')}
+    <section class="card"><h2 class="H">Comment lire un ticket</h2>
+      <p style="margin:0 0 8px;font-size:14px"><b>Chance que tout passe</b> : la probabilité que <i>tous</i> les joueurs du ticket marquent. Même le Solo passe moins d'une fois sur deux : un but reste rare.</p>
+      <p style="margin:0 0 8px;font-size:14px"><b>Cote juste</b> : la cote à partir de laquelle le pari devient intéressant d'après le modèle. Si un site propose <i>moins</i>, il garde l'avantage.</p>
+      <p style="margin:0;font-size:14px">Les tickets sont plus fiables avec la <b>version finale</b> (minuit) : alignements et gardiens à jour.</p></section>
+    <p class="note">Probabilités combinées en supposant les buts indépendants (approximation). Jouer comporte des risques : endettement, dépendance… Appelez le 09 74 75 13 13 (appel non surtaxé).</p></main>`;
 }
 
 function viewPrecision() {
