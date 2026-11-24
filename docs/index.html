@@ -107,10 +107,10 @@ addEventListener('hashchange', route);
 function route() {
   const h = location.hash.slice(1) || 'top';
   const [k, id] = h.split('-');
-  document.querySelectorAll('nav a').forEach(a => a.classList.toggle('on', a.dataset.k === (k === 'joueur' ? 'top' : k === 'match' ? 'matchs' : k)));
+  document.querySelectorAll('nav a').forEach(a => a.classList.toggle('on', a.dataset.k === (k === 'joueur' ? 'top' : k === 'match' ? 'matchs' : k === 'bilan' ? 'fiabilite' : k)));
   scrollTo(0, 0);
   if (!D && k !== 'modele' && k !== 'fiabilite') { app.innerHTML = '<p class="empty">Chargement… ou pas encore de données : lance la première mise à jour.</p>'; return; }
-  ({top: viewTop, joueur: () => viewPlayer(id), matchs: viewGames, match: () => viewMatch(id), fiabilite: viewPrecision, modele: viewModel, tickets: viewTickets}[k] || viewTop)();
+  ({top: viewTop, joueur: () => viewPlayer(id), matchs: viewGames, match: () => viewMatch(id), fiabilite: viewPrecision, bilan: viewPrecision, modele: viewModel, tickets: viewTickets}[k] || viewTop)();
 }
 
 const player = id => D.players[id];
