@@ -1,0 +1,231 @@
+{
+ "date": "2026-11-23",
+ "stage": "update",
+ "games": [
+  {
+   "away": "CBJ",
+   "home": "NJD"
+  },
+  {
+   "away": "LAK",
+   "home": "MTL"
+  },
+  {
+   "away": "CGY",
+   "home": "OTT"
+  },
+  {
+   "away": "TOR",
+   "home": "NYI"
+  },
+  {
+   "away": "UTA",
+   "home": "WPG"
+  },
+  {
+   "away": "ANA",
+   "home": "SEA"
+  },
+  {
+   "away": "MIN",
+   "home": "SJS"
+  }
+ ],
+ "expected": 39.0,
+ "actual": 29,
+ "top10": [
+  {
+   "name": "Kyle Connor",
+   "team": "WPG",
+   "opp": "UTA",
+   "prob": 0.4333,
+   "rank": 1,
+   "goals": 0,
+   "mood": null
+  },
+  {
+   "name": "Cutter Gauthier",
+   "team": "ANA",
+   "opp": "SEA",
+   "prob": 0.43,
+   "rank": 2,
+   "goals": 1,
+   "mood": null
+  },
+  {
+   "name": "Kirill Kaprizov",
+   "team": "MIN",
+   "opp": "SJS",
+   "prob": 0.4298,
+   "rank": 3,
+   "goals": 1,
+   "mood": null
+  },
+  {
+   "name": "Matt Boldy",
+   "team": "MIN",
+   "opp": "SJS",
+   "prob": 0.423,
+   "rank": 4,
+   "goals": 0,
+   "mood": null
+  },
+  {
+   "name": "Jack Hughes",
+   "team": "NJD",
+   "opp": "CBJ",
+   "prob": 0.405,
+   "rank": 5,
+   "goals": 0,
+   "mood": null
+  },
+  {
+   "name": "Macklin Celebrini",
+   "team": "SJS",
+   "opp": "MIN",
+   "prob": 0.3862,
+   "rank": 6,
+   "goals": 0,
+   "mood": "cold"
+  },
+  {
+   "name": "Auston Matthews",
+   "team": "TOR",
+   "opp": "NYI",
+   "prob": 0.3861,
+   "rank": 7,
+   "goals": 0,
+   "mood": "hot"
+  },
+  {
+   "name": "Cole Caufield",
+   "team": "MTL",
+   "opp": "LAK",
+   "prob": 0.3743,
+   "rank": 8,
+   "goals": 0,
+   "mood": null
+  },
+  {
+   "name": "Bo Horvat",
+   "team": "NYI",
+   "opp": "TOR",
+   "prob": 0.3742,
+   "rank": 9,
+   "goals": 0,
+   "mood": "cold"
+  },
+  {
+   "name": "Nick Suzuki",
+   "team": "MTL",
+   "opp": "LAK",
+   "prob": 0.3597,
+   "rank": 10,
+   "goals": 0,
+   "mood": null
+  }
+ ],
+ "top10_hits": 2,
+ "tickets": {
+  "Solo": {
+   "players": [
+    {
+     "name": "Kyle Connor",
+     "team": "WPG",
+     "prob": 0.4333,
+     "scored": false
+    }
+   ],
+   "prob": 0.4333,
+   "passed": false
+  },
+  "Duo": {
+   "players": [
+    {
+     "name": "Kyle Connor",
+     "team": "WPG",
+     "prob": 0.4333,
+     "scored": false
+    },
+    {
+     "name": "Cutter Gauthier",
+     "team": "ANA",
+     "prob": 0.43,
+     "scored": true
+    }
+   ],
+   "prob": 0.1863,
+   "passed": false
+  },
+  "Trio": {
+   "players": [
+    {
+     "name": "Kyle Connor",
+     "team": "WPG",
+     "prob": 0.4333,
+     "scored": false
+    },
+    {
+     "name": "Cutter Gauthier",
+     "team": "ANA",
+     "prob": 0.43,
+     "scored": true
+    },
+    {
+     "name": "Kirill Kaprizov",
+     "team": "MIN",
+     "prob": 0.4298,
+     "scored": true
+    }
+   ],
+   "prob": 0.0801,
+   "passed": false
+  }
+ },
+ "surprises": [
+  {
+   "name": "Chris Tanev",
+   "team": "TOR",
+   "opp": "NYI",
+   "prob": 0.0407,
+   "rank": 244,
+   "goals": 1,
+   "mood": null
+  },
+  {
+   "name": "Brenden Dillon",
+   "team": "NJD",
+   "opp": "CBJ",
+   "prob": 0.0416,
+   "rank": 242,
+   "goals": 1,
+   "mood": null
+  },
+  {
+   "name": "Andrew Peeke",
+   "team": "UTA",
+   "opp": "WPG",
+   "prob": 0.0471,
+   "rank": 226,
+   "goals": 1,
+   "mood": null
+  }
+ ],
+ "hot": {
+  "n": 19,
+  "scored": 2,
+  "expected": 3.4
+ },
+ "cold": {
+  "n": 21,
+  "scored": 2,
+  "expected": 3.6
+ },
+ "history": [
+  {
+   "date": "2026-11-23",
+   "top10_hits": 2,
+   "solo": false
+  }
+ ]
+}

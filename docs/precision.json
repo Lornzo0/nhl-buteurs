@@ -1,0 +1,85 @@
+{
+ "source": "backtest",
+ "backtest": {
+  "n": 48777,
+  "nights": 178,
+  "logloss": 0.3952,
+  "logloss_naive": 0.4013,
+  "top10_naive": 3.61,
+  "gain_vs_naive": 6.4,
+  "auc": 0.703,
+  "brier": 0.1212,
+  "top10_hits": 3.84,
+  "calibration": [
+   {
+    "bin": "5–15 %",
+    "pred": 0.096,
+    "obs": 0.097,
+    "n": 22344
+   },
+   {
+    "bin": "15–25 %",
+    "pred": 0.193,
+    "obs": 0.198,
+    "n": 12370
+   },
+   {
+    "bin": "25–35 %",
+    "pred": 0.294,
+    "obs": 0.285,
+    "n": 6306
+   },
+   {
+    "bin": "35–45 %",
+    "pred": 0.385,
+    "obs": 0.382,
+    "n": 2187
+   },
+   {
+    "bin": "45 %+",
+    "pred": 0.463,
+    "obs": 0.512,
+    "n": 43
+   }
+  ],
+  "period": [
+   "2025-11-20",
+   "2026-11-22"
+  ],
+  "variant": {
+   "num_leaves": 15,
+   "min_child_samples": 500
+  },
+  "duel": null
+ },
+ "last_night": {
+  "date": "2026-11-23",
+  "top": [
+   {
+    "name": "Kyle Connor",
+    "prob": 0.4333,
+    "scored": false
+   },
+   {
+    "name": "Cutter Gauthier",
+    "prob": 0.43,
+    "scored": true
+   },
+   {
+    "name": "Kirill Kaprizov",
+    "prob": 0.4298,
+    "scored": true
+   },
+   {
+    "name": "Matt Boldy",
+    "prob": 0.423,
+    "scored": false
+   },
+   {
+    "name": "Jack Hughes",
+    "prob": 0.405,
+    "scored": false
+   }
+  ]
+ }
+}
