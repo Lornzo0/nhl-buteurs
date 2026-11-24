@@ -2,18 +2,17 @@ name: NHL — prédictions et résultats
 
 on:
   schedule:
-    - cron: "30 7 * * *"   # 8h30 Paris : résultats de la nuit
-    - cron: "0 8 * * *"    # 9h Paris   : avant-première
-    - cron: "0 17 * * *"   # 18h Paris  : mise à jour (blessures, gardiens)
-    - cron: "0 23 * * *"   # minuit     : version finale archivée
-    - cron: "0 5 * * 1"    # lundi 6h   : ré-entraînement du modèle
+    # GitHub peut retarder les tâches planifiées de plusieurs heures : on passe
+    # toutes les heures et le script décide quoi faire selon l'heure des matchs.
+    - cron: "17 * * * *"   # résultats + avant-première / mise à jour / finale
+    - cron: "41 5 * * 1"   # lundi : ré-entraînement du modèle
   workflow_dispatch:
     inputs:
       task:
         description: "Tâche à lancer"
         type: choice
-        options: [update, preview, final, results, train]
-        default: update
+        options: [auto, update, preview, final, results, train]
+        default: auto
 
 permissions:
   contents: write
@@ -43,11 +42,8 @@ jobs:
         id: t
         run: |
           case "${{ github.event.schedule }}" in
-            "30 7 * * *") T=results ;;
-            "0 8 * * *")  T=preview ;;
-            "0 17 * * *") T=update ;;
-            "0 23 * * *") T=final ;;
-            "0 5 * * 1")  T=train ;;
+            "17 * * * *") T=auto ;;
+            "41 5 * * 1") T=train ;;
             *)            T="${{ inputs.task }}" ;;
           esac
           if [ ! -f models/features.json ] && [ "$T" != "train" ]; then T="train_then_$T"; fi
@@ -61,6 +57,7 @@ jobs:
           case "$T" in
             train)   python -m nhl.train ;;
             results) python -m nhl.results ;;
+            auto)    python -m nhl.results && python -m nhl.predict --stage auto ;;
             *)       python -m nhl.predict --stage "$T" ;;
           esac
       - name: Publier

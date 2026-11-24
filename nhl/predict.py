@@ -249,18 +249,68 @@ def write(payload, stage):
     C.DOCS.mkdir(exist_ok=True)
     txt = json.dumps(payload, ensure_ascii=False, separators=(",", ":"), default=str)
     (C.DOCS / "data.json").write_text(txt)
-    if stage == "final":
+    if payload.get("games"):
+        # Chaque passage AVANT le premier match est archivé ; le dernier écrase les
+        # précédents : c'est donc toujours la prédiction la plus fraîche qui est évaluée,
+        # même si GitHub décale ou saute un passage.
         C.HISTORY.mkdir(exist_ok=True)
         (C.HISTORY / f"{payload['date']}.json").write_text(txt)
     print(f"→ {len(payload.get('top', []))} joueurs au top, écrit dans docs/data.json")
 
 
+def auto():
+    """Décide quoi faire selon l'heure du premier match (lancé toutes les heures).
+
+    GitHub peut retarder les tâches planifiées de plusieurs heures : plutôt que
+    de dépendre d'horaires fixes, chaque passage regarde où on en est.
+      - plus de 10 h avant le premier match : avant-première (une seule fois)
+      - entre 10 h et 2 h 30 avant : mise à jour (au plus toutes les 3 h)
+      - moins de 2 h 30 avant : version finale (au plus toutes les heures)
+      - match commencé : rien
+    """
+    day = night()
+    games = S.schedule(day)
+    if not games:
+        print(f"Pas de match la nuit du {day}.")
+        if not _current(day):
+            write({"date": day.isoformat(), "stage": "update", "games": [], "top": [], "players": {},
+                   "generated": datetime.now(timezone.utc).isoformat(timespec="minutes")}, "update")
+        return
+    now = datetime.now(timezone.utc)
+    first = min(datetime.fromisoformat(g["start"].replace("Z", "+00:00")) for g in games if g.get("start"))
+    hours = (first - now).total_seconds() / 3600
+    stage = "preview" if hours > 10 else "update" if hours > 2.5 else "final"
+    cur = _current(day)
+    if hours <= 0:
+        print(f"Premier match commencé ({first:%H:%M} UTC) : rien à faire.")
+        return
+    if cur:
+        age = (now - datetime.fromisoformat(cur["generated"])).total_seconds() / 3600
+        min_age = {"preview": 99, "update": 3, "final": 1}[stage]
+        if cur["stage"] == stage and age < min_age:
+            print(f"Déjà à jour ({stage}, il y a {age:.1f} h).")
+            return
+    print(f"Premier match dans {hours:.1f} h → passage « {stage} »")
+    run(day, stage)
+
+
+def _current(day):
+    f = C.DOCS / "data.json"
+    if not f.exists():
+        return None
+    d = json.loads(f.read_text())
+    return d if d.get("date") == day.isoformat() else None
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--stage", choices=["preview", "update", "final"], default="update")
+    ap.add_argument("--stage", choices=["auto", "preview", "update", "final"], default="auto")
     ap.add_argument("--date", help="AAAA-MM-JJ (par défaut : la soirée NHL en cours)")
     a = ap.parse_args()
-    run(date.fromisoformat(a.date) if a.date else night(), a.stage)
+    if a.stage == "auto" and not a.date:
+        auto()
+    else:
+        run(date.fromisoformat(a.date) if a.date else night(), "update" if a.stage == "auto" else a.stage)
 
 
 if __name__ == "__main__":
