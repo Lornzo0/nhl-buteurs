@@ -53,31 +53,31 @@
   "duel": null
  },
  "last_night": {
-  "date": "2026-11-23",
+  "date": "2026-11-24",
   "top": [
    {
-    "name": "Kyle Connor",
-    "prob": 0.4333,
+    "name": "Leon Draisaitl",
+    "prob": 0.4398,
     "scored": false
    },
    {
-    "name": "Cutter Gauthier",
-    "prob": 0.43,
+    "name": "Connor McDavid",
+    "prob": 0.3562,
     "scored": true
    },
    {
-    "name": "Kirill Kaprizov",
-    "prob": 0.4298,
+    "name": "Jack Eichel",
+    "prob": 0.3178,
     "scored": true
    },
    {
-    "name": "Matt Boldy",
-    "prob": 0.423,
+    "name": "Mark Stone",
+    "prob": 0.2914,
     "scored": false
    },
    {
-    "name": "Jack Hughes",
-    "prob": 0.405,
+    "name": "Mitch Marner",
+    "prob": 0.291,
     "scored": false
    }
   ]

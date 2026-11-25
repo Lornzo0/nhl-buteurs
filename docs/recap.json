@@ -1,230 +1,205 @@
 {
- "date": "2026-11-23",
- "stage": "update",
+ "date": "2026-11-24",
+ "stage": "final",
  "games": [
   {
-   "away": "CBJ",
-   "home": "NJD"
-  },
-  {
-   "away": "LAK",
-   "home": "MTL"
-  },
-  {
-   "away": "CGY",
-   "home": "OTT"
-  },
-  {
-   "away": "TOR",
-   "home": "NYI"
-  },
-  {
-   "away": "UTA",
-   "home": "WPG"
-  },
-  {
-   "away": "ANA",
-   "home": "SEA"
-  },
-  {
-   "away": "MIN",
-   "home": "SJS"
+   "away": "VGK",
+   "home": "EDM"
   }
  ],
- "expected": 39.0,
- "actual": 29,
+ "expected": 5.5,
+ "actual": 6,
  "top10": [
   {
-   "name": "Kyle Connor",
-   "team": "WPG",
-   "opp": "UTA",
-   "prob": 0.4333,
+   "name": "Leon Draisaitl",
+   "team": "EDM",
+   "opp": "VGK",
+   "prob": 0.4398,
    "rank": 1,
    "goals": 0,
-   "mood": null
+   "mood": "hot"
   },
   {
-   "name": "Cutter Gauthier",
-   "team": "ANA",
-   "opp": "SEA",
-   "prob": 0.43,
+   "name": "Connor McDavid",
+   "team": "EDM",
+   "opp": "VGK",
+   "prob": 0.3562,
    "rank": 2,
    "goals": 1,
    "mood": null
   },
   {
-   "name": "Kirill Kaprizov",
-   "team": "MIN",
-   "opp": "SJS",
-   "prob": 0.4298,
+   "name": "Jack Eichel",
+   "team": "VGK",
+   "opp": "EDM",
+   "prob": 0.3178,
    "rank": 3,
-   "goals": 1,
-   "mood": null
+   "goals": 2,
+   "mood": "hot"
   },
   {
-   "name": "Matt Boldy",
-   "team": "MIN",
-   "opp": "SJS",
-   "prob": 0.423,
+   "name": "Mark Stone",
+   "team": "VGK",
+   "opp": "EDM",
+   "prob": 0.2914,
    "rank": 4,
-   "goals": 0,
-   "mood": null
-  },
-  {
-   "name": "Jack Hughes",
-   "team": "NJD",
-   "opp": "CBJ",
-   "prob": 0.405,
-   "rank": 5,
-   "goals": 0,
-   "mood": null
-  },
-  {
-   "name": "Macklin Celebrini",
-   "team": "SJS",
-   "opp": "MIN",
-   "prob": 0.3862,
-   "rank": 6,
-   "goals": 0,
-   "mood": "cold"
-  },
-  {
-   "name": "Auston Matthews",
-   "team": "TOR",
-   "opp": "NYI",
-   "prob": 0.3861,
-   "rank": 7,
    "goals": 0,
    "mood": "hot"
   },
   {
-   "name": "Cole Caufield",
-   "team": "MTL",
-   "opp": "LAK",
-   "prob": 0.3743,
+   "name": "Mitch Marner",
+   "team": "VGK",
+   "opp": "EDM",
+   "prob": 0.291,
+   "rank": 5,
+   "goals": 0,
+   "mood": "hot"
+  },
+  {
+   "name": "Tomas Hertl",
+   "team": "VGK",
+   "opp": "EDM",
+   "prob": 0.2762,
+   "rank": 6,
+   "goals": 0,
+   "mood": "hot"
+  },
+  {
+   "name": "Vasily Podkolzin",
+   "team": "EDM",
+   "opp": "VGK",
+   "prob": 0.2711,
+   "rank": 7,
+   "goals": 1,
+   "mood": "hot"
+  },
+  {
+   "name": "Victor Olofsson",
+   "team": "VGK",
+   "opp": "EDM",
+   "prob": 0.2603,
    "rank": 8,
    "goals": 0,
-   "mood": null
+   "mood": "hot"
   },
   {
-   "name": "Bo Horvat",
-   "team": "NYI",
-   "opp": "TOR",
-   "prob": 0.3742,
+   "name": "Trevor Connelly",
+   "team": "VGK",
+   "opp": "EDM",
+   "prob": 0.2543,
    "rank": 9,
-   "goals": 0,
-   "mood": "cold"
+   "goals": 2,
+   "mood": "hot"
   },
   {
-   "name": "Nick Suzuki",
-   "team": "MTL",
-   "opp": "LAK",
-   "prob": 0.3597,
+   "name": "William Karlsson",
+   "team": "VGK",
+   "opp": "EDM",
+   "prob": 0.236,
    "rank": 10,
    "goals": 0,
-   "mood": null
+   "mood": "hot"
   }
  ],
- "top10_hits": 2,
+ "top10_hits": 4,
  "tickets": {
   "Solo": {
    "players": [
     {
-     "name": "Kyle Connor",
-     "team": "WPG",
-     "prob": 0.4333,
+     "name": "Leon Draisaitl",
+     "team": "EDM",
+     "prob": 0.4398,
      "scored": false
     }
    ],
-   "prob": 0.4333,
+   "prob": 0.4398,
    "passed": false
   },
   "Duo": {
    "players": [
     {
-     "name": "Kyle Connor",
-     "team": "WPG",
-     "prob": 0.4333,
+     "name": "Leon Draisaitl",
+     "team": "EDM",
+     "prob": 0.4398,
      "scored": false
     },
     {
-     "name": "Cutter Gauthier",
-     "team": "ANA",
-     "prob": 0.43,
+     "name": "Jack Eichel",
+     "team": "VGK",
+     "prob": 0.3178,
      "scored": true
     }
    ],
-   "prob": 0.1863,
+   "prob": 0.1398,
    "passed": false
   },
   "Trio": {
    "players": [
     {
-     "name": "Kyle Connor",
-     "team": "WPG",
-     "prob": 0.4333,
+     "name": "Leon Draisaitl",
+     "team": "EDM",
+     "prob": 0.4398,
      "scored": false
     },
     {
-     "name": "Cutter Gauthier",
-     "team": "ANA",
-     "prob": 0.43,
-     "scored": true
-    },
-    {
-     "name": "Kirill Kaprizov",
-     "team": "MIN",
-     "prob": 0.4298,
+     "name": "Jack Eichel",
+     "team": "VGK",
+     "prob": 0.3178,
      "scored": true
     }
    ],
-   "prob": 0.0801,
+   "prob": 0.1398,
    "passed": false
   }
  },
  "surprises": [
   {
-   "name": "Chris Tanev",
-   "team": "TOR",
-   "opp": "NYI",
-   "prob": 0.0407,
-   "rank": 244,
+   "name": "Nic Dowd",
+   "team": "VGK",
+   "opp": "EDM",
+   "prob": 0.059,
+   "rank": 29,
+   "goals": 1,
+   "mood": "cold"
+  },
+  {
+   "name": "Colton Dach",
+   "team": "EDM",
+   "opp": "VGK",
+   "prob": 0.1438,
+   "rank": 16,
    "goals": 1,
    "mood": null
   },
   {
-   "name": "Brenden Dillon",
-   "team": "NJD",
-   "opp": "CBJ",
-   "prob": 0.0416,
-   "rank": 242,
-   "goals": 1,
-   "mood": null
-  },
-  {
-   "name": "Andrew Peeke",
-   "team": "UTA",
-   "opp": "WPG",
-   "prob": 0.0471,
-   "rank": 226,
-   "goals": 1,
-   "mood": null
+   "name": "Trevor Connelly",
+   "team": "VGK",
+   "opp": "EDM",
+   "prob": 0.2543,
+   "rank": 9,
+   "goals": 2,
+   "mood": "hot"
   }
  ],
  "hot": {
-  "n": 19,
-  "scored": 2,
-  "expected": 3.4
+  "n": 10,
+  "scored": 3,
+  "expected": 2.8
  },
  "cold": {
-  "n": 21,
-  "scored": 2,
-  "expected": 3.6
+  "n": 3,
+  "scored": 1,
+  "expected": 0.2
  },
  "history": [
   {
    "date": "2026-11-23",
    "top10_hits": 2,
+   "solo": false
+  },
+  {
+   "date": "2026-11-24",
+   "top10_hits": 4,
    "solo": false
   }
  ]
