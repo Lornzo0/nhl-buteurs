@@ -1,195 +1,253 @@
 {
- "date": "2026-11-24",
- "stage": "final",
+ "date": "2026-11-25",
+ "stage": "update",
  "games": [
   {
-   "away": "VGK",
-   "home": "EDM"
-  }
- ],
- "expected": 5.5,
- "actual": 6,
- "top10": [
-  {
-   "name": "Leon Draisaitl",
-   "team": "EDM",
-   "opp": "VGK",
-   "prob": 0.4398,
-   "rank": 1,
-   "goals": 0,
-   "mood": "hot"
+   "away": "WPG",
+   "home": "BOS"
   },
   {
-   "name": "Connor McDavid",
-   "team": "EDM",
-   "opp": "VGK",
-   "prob": 0.3562,
+   "away": "NYR",
+   "home": "BUF"
+  },
+  {
+   "away": "CAR",
+   "home": "TBL"
+  },
+  {
+   "away": "OTT",
+   "home": "FLA"
+  },
+  {
+   "away": "STL",
+   "home": "NYI"
+  },
+  {
+   "away": "CGY",
+   "home": "PIT"
+  },
+  {
+   "away": "PHI",
+   "home": "WSH"
+  },
+  {
+   "away": "NJD",
+   "home": "CBJ"
+  },
+  {
+   "away": "VAN",
+   "home": "DET"
+  },
+  {
+   "away": "NSH",
+   "home": "DAL"
+  },
+  {
+   "away": "UTA",
+   "home": "MIN"
+  },
+  {
+   "away": "MTL",
+   "home": "COL"
+  },
+  {
+   "away": "CHI",
+   "home": "SEA"
+  },
+  {
+   "away": "SJS",
+   "home": "ANA"
+  }
+ ],
+ "expected": 77.4,
+ "actual": 77,
+ "top10": [
+  {
+   "name": "Cutter Gauthier",
+   "team": "ANA",
+   "opp": "SJS",
+   "prob": 0.4481,
+   "rank": 1,
+   "goals": 1,
+   "mood": null
+  },
+  {
+   "name": "Kyle Connor",
+   "team": "WPG",
+   "opp": "BOS",
+   "prob": 0.4237,
    "rank": 2,
    "goals": 1,
    "mood": null
   },
   {
-   "name": "Jack Eichel",
-   "team": "VGK",
-   "opp": "EDM",
-   "prob": 0.3178,
+   "name": "Kirill Kaprizov",
+   "team": "MIN",
+   "opp": "UTA",
+   "prob": 0.4223,
    "rank": 3,
-   "goals": 2,
-   "mood": "hot"
+   "goals": 0,
+   "mood": null
   },
   {
-   "name": "Mark Stone",
-   "team": "VGK",
-   "opp": "EDM",
-   "prob": 0.2914,
+   "name": "Matt Boldy",
+   "team": "MIN",
+   "opp": "UTA",
+   "prob": 0.4193,
    "rank": 4,
    "goals": 0,
-   "mood": "hot"
+   "mood": null
   },
   {
-   "name": "Mitch Marner",
-   "team": "VGK",
-   "opp": "EDM",
-   "prob": 0.291,
+   "name": "Macklin Celebrini",
+   "team": "SJS",
+   "opp": "ANA",
+   "prob": 0.4097,
    "rank": 5,
    "goals": 0,
-   "mood": "hot"
+   "mood": null
   },
   {
-   "name": "Tomas Hertl",
-   "team": "VGK",
-   "opp": "EDM",
-   "prob": 0.2762,
+   "name": "Jack Hughes",
+   "team": "NJD",
+   "opp": "CBJ",
+   "prob": 0.4005,
    "rank": 6,
    "goals": 0,
-   "mood": "hot"
+   "mood": null
   },
   {
-   "name": "Vasily Podkolzin",
-   "team": "EDM",
-   "opp": "VGK",
-   "prob": 0.2711,
+   "name": "Alex DeBrincat",
+   "team": "DET",
+   "opp": "VAN",
+   "prob": 0.3973,
    "rank": 7,
-   "goals": 1,
-   "mood": "hot"
+   "goals": 0,
+   "mood": null
   },
   {
-   "name": "Victor Olofsson",
-   "team": "VGK",
-   "opp": "EDM",
-   "prob": 0.2603,
+   "name": "David Pastrnak",
+   "team": "BOS",
+   "opp": "WPG",
+   "prob": 0.397,
    "rank": 8,
    "goals": 0,
-   "mood": "hot"
+   "mood": null
   },
   {
-   "name": "Trevor Connelly",
-   "team": "VGK",
-   "opp": "EDM",
-   "prob": 0.2543,
+   "name": "Tage Thompson",
+   "team": "BUF",
+   "opp": "NYR",
+   "prob": 0.3753,
    "rank": 9,
-   "goals": 2,
-   "mood": "hot"
+   "goals": 0,
+   "mood": null
   },
   {
-   "name": "William Karlsson",
-   "team": "VGK",
-   "opp": "EDM",
-   "prob": 0.236,
+   "name": "Jason Robertson",
+   "team": "DAL",
+   "opp": "NSH",
+   "prob": 0.363,
    "rank": 10,
    "goals": 0,
-   "mood": "hot"
+   "mood": null
   }
  ],
- "top10_hits": 4,
+ "top10_hits": 2,
  "tickets": {
   "Solo": {
    "players": [
     {
-     "name": "Leon Draisaitl",
-     "team": "EDM",
-     "prob": 0.4398,
-     "scored": false
+     "name": "Cutter Gauthier",
+     "team": "ANA",
+     "prob": 0.4481,
+     "scored": true
     }
    ],
-   "prob": 0.4398,
-   "passed": false
+   "prob": 0.4481,
+   "passed": true
   },
   "Duo": {
    "players": [
     {
-     "name": "Leon Draisaitl",
-     "team": "EDM",
-     "prob": 0.4398,
-     "scored": false
+     "name": "Cutter Gauthier",
+     "team": "ANA",
+     "prob": 0.4481,
+     "scored": true
     },
     {
-     "name": "Jack Eichel",
-     "team": "VGK",
-     "prob": 0.3178,
+     "name": "Kyle Connor",
+     "team": "WPG",
+     "prob": 0.4237,
      "scored": true
     }
    ],
-   "prob": 0.1398,
-   "passed": false
+   "prob": 0.1899,
+   "passed": true
   },
   "Trio": {
    "players": [
     {
-     "name": "Leon Draisaitl",
-     "team": "EDM",
-     "prob": 0.4398,
-     "scored": false
+     "name": "Cutter Gauthier",
+     "team": "ANA",
+     "prob": 0.4481,
+     "scored": true
     },
     {
-     "name": "Jack Eichel",
-     "team": "VGK",
-     "prob": 0.3178,
+     "name": "Kyle Connor",
+     "team": "WPG",
+     "prob": 0.4237,
      "scored": true
+    },
+    {
+     "name": "Kirill Kaprizov",
+     "team": "MIN",
+     "prob": 0.4223,
+     "scored": false
     }
    ],
-   "prob": 0.1398,
+   "prob": 0.0802,
    "passed": false
   }
  },
  "surprises": [
   {
-   "name": "Nic Dowd",
-   "team": "VGK",
-   "opp": "EDM",
-   "prob": 0.059,
-   "rank": 29,
-   "goals": 1,
-   "mood": "cold"
-  },
-  {
-   "name": "Colton Dach",
-   "team": "EDM",
-   "opp": "VGK",
-   "prob": 0.1438,
-   "rank": 16,
+   "name": "Niko Mikkola",
+   "team": "FLA",
+   "opp": "OTT",
+   "prob": 0.0657,
+   "rank": 410,
    "goals": 1,
    "mood": null
   },
   {
-   "name": "Trevor Connelly",
-   "team": "VGK",
-   "opp": "EDM",
-   "prob": 0.2543,
-   "rank": 9,
-   "goals": 2,
-   "mood": "hot"
+   "name": "Dmitri Simashev",
+   "team": "UTA",
+   "opp": "MIN",
+   "prob": 0.0665,
+   "rank": 407,
+   "goals": 1,
+   "mood": null
+  },
+  {
+   "name": "Vladislav Gavrikov",
+   "team": "NYR",
+   "opp": "BUF",
+   "prob": 0.0676,
+   "rank": 401,
+   "goals": 1,
+   "mood": "cold"
   }
  ],
  "hot": {
-  "n": 10,
-  "scored": 3,
-  "expected": 2.8
+  "n": 45,
+  "scored": 7,
+  "expected": 7.8
  },
  "cold": {
-  "n": 3,
-  "scored": 1,
-  "expected": 0.2
+  "n": 41,
+  "scored": 12,
+  "expected": 6.5
  },
  "history": [
   {
@@ -201,6 +259,11 @@
    "date": "2026-11-24",
    "top10_hits": 4,
    "solo": false
+  },
+  {
+   "date": "2026-11-25",
+   "top10_hits": 2,
+   "solo": true
   }
  ]
 }
