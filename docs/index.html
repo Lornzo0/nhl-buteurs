@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--blue:#0b2a6b;--red:#d7132b;--bg:#f3f6fa;--card:#fff;--ink:#0b1530;--mute:#5b6785;--line:#dfe5ef;--ice:#e8eef7;
- --up:#16653a;--down:#b3122a;--top:env(safe-area-inset-top);--bot:env(safe-area-inset-bottom)}
+ --up:#16653a;--down:#b3122a;--soft:#7fa0dc;--hi:#8fb0ff;--top:env(safe-area-inset-top);--bot:env(safe-area-inset-bottom)}
 @media(prefers-color-scheme:dark){:root{--bg:#0a1022;--card:#121a33;--ink:#eef2fb;--mute:#9aa6c4;--line:#222c4a;--ice:#1b2544;--up:#4cc98a;--down:#ff6b7d}}
 *{box-sizing:border-box;min-width:0}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
@@ -39,9 +39,9 @@ main{max-width:640px;margin:0 auto;padding:12px 14px calc(90px + var(--bot))}
 .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .meta{font-size:12.5px;color:var(--mute);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .pct{font-size:32px;line-height:1;color:var(--blue);text-align:right}
-@media(prefers-color-scheme:dark){.pct,.big{color:#8fb0ff}}
+@media(prefers-color-scheme:dark){.pct,.big{color:var(--hi)}}
 .form{display:flex;gap:3px;margin-top:4px}.form i{width:14px;height:6px;border-radius:2px;background:var(--line)}
-.form i.s{background:#7fa0dc}.form i.g{background:var(--red)}
+.form i.s{background:var(--soft)}.form i.g{background:var(--red)}
 .trend{font-size:11.5px;font-weight:600;text-align:right;color:var(--mute)}
 .f{display:grid;grid-template-columns:minmax(0,1fr) 70px 46px;gap:8px;align-items:center;font-size:13px;margin:7px 0}
 .f small{display:block;color:var(--mute);font-size:11.5px}
@@ -58,7 +58,7 @@ header .tile{background:rgba(255,255,255,.1)}header .tile span{color:#fff;opacit
 .ring>div{width:74px;height:74px;border-radius:50%;background:var(--blue);display:flex;flex-direction:column;align-items:center;justify-content:center}
 .bars{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;align-items:end;height:80px;margin-top:10px}
 .bars span{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;height:100%}
-.bars i{width:100%;background:#7fa0dc;border-radius:3px 3px 0 0}.bars b{width:8px;height:8px;border-radius:50%}
+.bars i{width:100%;background:var(--soft);border-radius:3px 3px 0 0}.bars b{width:8px;height:8px;border-radius:50%}
 table{width:100%;border-collapse:collapse;font-size:13px}td{padding:6px 0;border-top:1px solid var(--line)}
 .cmp td:nth-child(2){text-align:center;color:var(--mute)}.cmp td:last-child{text-align:right}
 .hbar{display:grid;grid-template-columns:138px minmax(0,1fr) 44px;gap:8px;align-items:center;font-size:12.5px;margin:6px 0}
@@ -67,7 +67,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}td{padding:6px 0;border
 .back{display:inline-flex;align-items:center;gap:4px;font-size:14px;min-height:32px;color:#fff;margin-bottom:6px}
 nav{position:fixed;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:var(--card);border-top:1px solid var(--line);padding:8px 0 calc(8px + var(--bot))}
 nav a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--mute);min-height:44px}
-nav a.on{color:var(--blue);font-weight:600}@media(prefers-color-scheme:dark){nav a.on{color:#8fb0ff}}
+nav a.on{color:var(--blue);font-weight:600}@media(prefers-color-scheme:dark){nav a.on{color:var(--hi)}}
 .note{font-size:12px;color:var(--mute);margin:6px 4px}
 .mood{font-size:15px;line-height:1}
 .why{display:flex;flex-direction:column;gap:3px;margin-top:10px;font-size:13px}
@@ -76,6 +76,13 @@ nav a.on{color:var(--blue);font-weight:600}@media(prefers-color-scheme:dark){nav
 .tk-p{display:grid;grid-template-columns:minmax(0,1fr) 52px;gap:8px;align-items:center;padding:9px 14px;border-top:1px dashed var(--line)}
 .tk-f{display:flex;justify-content:space-between;align-items:flex-end;padding:12px 14px;border-top:2px dashed var(--line);background:var(--bg)}
 .empty{text-align:center;color:var(--mute);padding:50px 10px}
+.sw{display:flex;width:max-content;background:rgba(255,255,255,.14);border-radius:20px;padding:3px;margin-bottom:12px}
+.sw button{display:flex;align-items:center;gap:6px;min-height:34px;padding:0 16px;border:0;border-radius:17px;background:none;color:#fff;font:600 14px Inter,sans-serif;cursor:pointer}
+.sw button.on{background:#fff;color:var(--blue)}
+body.nba{--blue:#a63a0c;--red:#ffb020;--bg:#f7f3ef;--line:#ebdfd5;--ice:#f4e7dd;--soft:#eba27a}
+@media(prefers-color-scheme:dark){body.nba{--bg:#130d0a;--card:#211712;--line:#3b2a21;--ice:#2e2019;--hi:#ffb38a}}
+.p20{position:absolute;left:0;right:0;border-top:1px dashed var(--mute);opacity:.7}
+.bars small{font-size:10px;color:var(--mute);line-height:1}
 </style>
 </head>
 <body>
@@ -94,23 +101,75 @@ const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;
 const nf = (x, d = 1) => x == null ? '–' : Number(x).toLocaleString('fr-FR', {minimumFractionDigits: d, maximumFractionDigits: d});
 const pc = p => Math.round(p * 100) + '%';
 const GROUPS = {player: 'Le joueur', opp: "L'adversaire", ctx: 'Le contexte', book: 'Les bookmakers'};
-const GCOL = {player: '#0b2a6b', opp: '#d7132b', ctx: '#7fa0dc', book: '#f2a900'};
+const GCOL = {player: 'var(--blue)', opp: '#d7132b', ctx: '#7fa0dc', book: '#f2a900'};
 const STAGE = {preview: ['Provisoire', 'b-warn'], update: ['Mis à jour', 'b-pr'], final: ['Version finale', 'b-ok']};
+// Tout ce qui change d'un sport à l'autre : dossier des données, textes, couleurs.
+const SP = {
+  nhl: {dir: '', label: 'NHL', icon: '🏒', title: 'Buteurs du soir', theme: '#0b2a6b',
+    none: 'Pas de match NHL cette nuit.', unit: 'buteurs', hitWord: 'But ✓', missWord: 'Raté',
+    teamKey: 'xg', teamUnit: 'buts attendus', teamDec: 1, probe: 'Buteurs probables',
+    calib: (a, b) => `Quand l'app dit ${a} %, ils marquent ${b} % du temps`,
+    naive: "de buteurs trouvés en plus qu'un classement aux buts de la saison",
+    modelTitle: 'Ce qui compte le plus pour marquer', credit: 'Données xG : MoneyPuck.com.',
+    ticketRisk: "Même le Solo passe moins d'une fois sur deux : un but reste rare."},
+  nba: {dir: 'nba/', label: 'NBA', icon: '🏀', title: '20+ du soir', theme: '#a63a0c',
+    none: 'Pas de match NBA cette nuit.', unit: 'joueurs à 20+', hitWord: '20+ ✓', missWord: 'Raté',
+    teamKey: 'pts', teamUnit: 'pts attendus', teamDec: 0, probe: 'Joueurs à 20+ probables',
+    calib: (a, b) => `Quand l'app dit ${a} %, ils passent 20 points ${b} % du temps`,
+    naive: "de joueurs à 20+ trouvés en plus qu'un classement à la moyenne de points",
+    modelTitle: 'Ce qui compte pour passer 20 points', credit: 'Données : NBA.com (statistiques et feuilles de match), ESPN (blessures).',
+    ticketRisk: "Même le Solo n'est jamais garanti : un soir sans réussite arrive à tous les marqueurs."},
+};
+let SPORT = (() => {
+  const q = new URLSearchParams(location.search).get('sport');
+  if (SP[q]) return q;
+  try { return SP[localStorage.getItem('sport')] ? localStorage.getItem('sport') : 'nhl'; } catch (e) { return 'nhl'; }
+})();
+const T = () => SP[SPORT], isNBA = () => SPORT === 'nba';
 let D = null, P = {}, M = {}, R = null, filter = 'all';
+const CACHE = {};
 
 const get = u => fetch(u + '?' + Date.now()).then(r => r.ok ? r.json() : null).catch(() => null);
-Promise.all([get('data.json'), get('precision.json'), get('model.json'), get('recap.json')]).then(([d, p, m, r]) => {
-  D = d; P = p || {}; M = m || {}; R = r; route();
-});
+function load() {
+  const s = SPORT;
+  document.body.classList.toggle('nba', s === 'nba');
+  document.title = T().title;
+  document.querySelector('meta[name=theme-color]').content = T().theme;
+  if (CACHE[s]) { [D, P, M, R] = CACHE[s]; route(); return; }
+  D = null; app.innerHTML = '<p class="empty">Chargement…</p>';
+  Promise.all(['data.json', 'precision.json', 'model.json', 'recap.json'].map(f => get(T().dir + f))).then(([d, p, m, r]) => {
+    CACHE[s] = [d, p || {}, m || {}, r];
+    if (s === SPORT) { [D, P, M, R] = CACHE[s]; route(); }
+  });
+}
+function setSport(s) {
+  if (s === SPORT || !SP[s]) return;
+  SPORT = s; filter = 'all';
+  try { localStorage.setItem('sport', s); } catch (e) {}
+  history.replaceState(null, '', location.pathname + (s === 'nba' ? '?sport=nba' : '') + location.hash.replace(/^#(joueur|match)-.*/, '#top'));
+  load();
+}
+const switcher = () => `<div class="sw" role="tablist" aria-label="Sport">${Object.entries(SP).map(([k, v]) =>
+  `<button role="tab" aria-selected="${k === SPORT}" class="${k === SPORT ? 'on' : ''}" data-sport="${k}"><span aria-hidden="true">${v.icon}</span>${v.label}</button>`).join('')}</div>`;
 addEventListener('hashchange', route);
+load();
 
 function route() {
   const h = location.hash.slice(1) || 'top';
   const [k, id] = h.split('-');
   document.querySelectorAll('nav a').forEach(a => a.classList.toggle('on', a.dataset.k === (k === 'joueur' ? 'top' : k === 'match' ? 'matchs' : k === 'bilan' ? 'fiabilite' : k)));
   scrollTo(0, 0);
-  if (!D && k !== 'modele' && k !== 'fiabilite') { app.innerHTML = '<p class="empty">Chargement… ou pas encore de données : lance la première mise à jour.</p>'; return; }
-  ({top: viewTop, joueur: () => viewPlayer(id), matchs: viewGames, match: () => viewMatch(id), fiabilite: viewPrecision, bilan: viewPrecision, modele: viewModel, tickets: viewTickets}[k] || viewTop)();
+  if (!D && k !== 'modele' && k !== 'fiabilite' && k !== 'bilan') {
+    app.innerHTML = `<header><h1 class="H">${T().title}</h1></header><main><p class="empty">Pas encore de données ${T().label} : elles apparaîtront après la première mise à jour automatique.</p></main>`;
+  } else {
+    ({top: viewTop, joueur: () => (isNBA() ? viewPlayerNBA : viewPlayer)(id), matchs: viewGames, match: () => viewMatch(id), fiabilite: viewPrecision, bilan: viewPrecision, modele: viewModel, tickets: viewTickets}[k] || viewTop)();
+  }
+  // Sélecteur de sport en haut des écrans principaux (pas sur les fiches joueur / match).
+  const hd = app.querySelector('header');
+  if (hd && k !== 'joueur' && k !== 'match') {
+    hd.insertAdjacentHTML('afterbegin', switcher());
+    hd.querySelectorAll('[data-sport]').forEach(b => b.onclick = () => setSport(b.dataset.sport));
+  }
 }
 
 const player = id => D.players[id];
@@ -121,15 +180,23 @@ const back = (href, label) => `<a class="back" href="${href}"><svg width="18" he
 
 function form(c) {
   return '<span class="form" aria-label="10 derniers matchs">' + (c.last10 || []).map(g =>
-    `<i class="${g.g > 0 ? 'g' : g.xg >= 0.4 ? 's' : ''}"></i>`).join('') + '</span>';
+    `<i class="${isNBA() ? (g.p >= 20 ? 'g' : g.p >= 15 ? 's' : '') : g.g > 0 ? 'g' : g.xg >= 0.4 ? 's' : ''}"></i>`).join('') + '</span>';
 }
+const INJ = {'day-to-day': 'Incertain', questionable: 'Incertain', doubtful: 'Douteux', probable: 'Probable'};
+const injBadge = c => c.status ? `<span class="badge b-warn">${esc(INJ[c.status.toLowerCase()] || c.status)}</span>` : '';
 const moodIcon = c => c.mood === 'hot' ? '<span class="mood" title="En confiance">🔥 </span>' : c.mood === 'cold' ? '<span class="mood" title="En difficulté">❄️ </span>' : '';
 function goalieBadge(c) {
   const g = D.games.find(x => x.home.abbrev === c.opp || x.away.abbrev === c.opp);
   const s = g && (g.home.abbrev === c.opp ? g.home : g.away).goalie;
   return s ? `<span class="badge ${s.status === 'confirmé' ? 'b-ok' : 'b-pr'}">Gardien ${esc(s.status)}</span>` : '';
 }
-function rowHTML(c, i) {
+function rowHTML(c, i, alt) {
+  alt = alt === true;          // .map(rowHTML) passe le tableau en 3e argument
+  if (isNBA()) return `<a class="row" href="#joueur-${c.id}">
+    <span class="rk H">${i + 1}</span>
+    <span><div class="nm">${moodIcon(c)}${esc(c.name)}</div>
+      <div class="meta"><span>${c.team} ${c.home ? 'vs' : '@'} ${c.opp}${c.pos ? ' · ' + esc(c.pos) : ''}</span>${injBadge(c)}</div>${form(c)}</span>
+    <span><div class="pct H">${pc(alt ? c.p30 : c.prob)}</div><div class="trend">${alt ? '30+ pts' : '~' + nf(c.pts, 0) + ' pts'}</div></span></a>`;
   return `<a class="row" href="#joueur-${c.id}">
     <span class="rk H">${i + 1}</span>
     <span><div class="nm">${moodIcon(c)}${esc(c.name)}</div>
@@ -140,20 +207,52 @@ function rowHTML(c, i) {
 function viewTop() {
   const [st, cls] = STAGE[D.stage] || STAGE.update;
   let list = D.top.map(player).filter(Boolean);
-  if (filter !== 'all') list = Object.values(D.players).filter(c => (filter === 'D') === (c.pos === 'D')).sort((a, b) => b.prob - a.prob).slice(0, 25);
+  const alt = isNBA() && filter === '30';
+  if (alt) list = Object.values(D.players).sort((a, b) => b.p30 - a.p30).slice(0, 25);
+  else if (!isNBA() && filter !== 'all') list = Object.values(D.players).filter(c => (filter === 'D') === (c.pos === 'D')).sort((a, b) => b.prob - a.prob).slice(0, 25);
+  const chips = isNBA() ? [['all', '20+ points'], ['30', '30+ points']] : [['all', 'Tous'], ['F', 'Attaquants'], ['D', 'Défenseurs']];
+  const note = isNBA()
+    ? `% = probabilité de marquer au moins 20 points (30 avec le filtre « 30+ »). « ~ pts » = points attendus. Barrettes : 10 derniers matchs (foncé = 20+, clair = 15 à 19). 🔥 en confiance · ❄️ en difficulté (minutes, tirs, points récents). ${D.injuries === false ? 'Rapport de blessures indisponible.' : 'Joueurs déclarés absents retirés (rapport de blessures).'}`
+    : `% = probabilité de marquer au moins un but. Barrettes : 10 derniers matchs (rouge = but, bleu = grosse occasion). 🔥 en confiance · ❄️ en difficulté (tirs, glace, rôle en PP).`;
   app.innerHTML = `<header>
     <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:10px">
-      <div><div class="sub">${night()} · ${D.games.length} match${D.games.length > 1 ? 's' : ''}</div><h1 class="H">Buteurs du soir</h1></div>
+      <div><div class="sub">${night()} · ${D.games.length} match${D.games.length > 1 ? 's' : ''}</div><h1 class="H">${T().title}</h1></div>
       <span class="badge ${cls}">${st} · ${updated()}</span></div>
     <div class="redline"></div>
-    <div class="chips">${[['all', 'Tous'], ['F', 'Attaquants'], ['D', 'Défenseurs']].map(([k, l]) =>
+    <div class="chips">${chips.map(([k, l]) =>
       `<button class="chip ${filter === k ? 'on' : ''}" data-f="${k}">${l}</button>`).join('')}</div></header>
-    <main>${D.games.length ? list.map(rowHTML).join('') : '<p class="empty">Pas de match NHL cette nuit.</p>'}
-    <p class="note">% = probabilité de marquer au moins un but. Barrettes : 10 derniers matchs (rouge = but, bleu = grosse occasion). 🔥 en confiance · ❄️ en difficulté (tirs, glace, rôle en PP). ${D.books ? '' : 'Cotes bookmakers non connectées.'}</p></main>`;
-  app.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { filter = b.dataset.f; viewTop(); });
+    <main>${D.games.length ? list.map((c, i) => rowHTML(c, i, alt)).join('') : `<p class="empty">${T().none}</p>`}
+    <p class="note">${note} ${D.books ? '' : 'Cotes bookmakers non connectées.'}</p></main>`;
+  app.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { filter = b.dataset.f; route(); });
 }
 
+function detailNBA(c, param) {
+  const d = c.detail || {}, why = c.why || [];
+  return {
+    'Forme récente': `${nf(d.l5)} pts de moyenne sur 5 matchs`,
+    'Minutes projetées': `${nf(d.min)} min sur les 3 derniers matchs`,
+    'Adresse': d.ts == null ? '' : `${nf(d.ts * 100)} % de réussite réelle (TS%, lissée)`,
+    'Lancers francs provoqués': `${nf(d.fta)} lancers francs par match`,
+    'Régularité à 20+': d.p20 == null ? '' : `${nf(d.p20 * 100, 0)} % de matchs à 20+ récemment (lissé) · écart type ${nf(c.sd)} pts`,
+    'Titulaire': c.pos ? c.pos.toLowerCase() : 'inconnu',
+    'Expérience': '',
+    'Confiance & séries': why.filter(w => /min de jeu|tirs|pts de moyenne|de suite/.test(w)).join(' · ') || 'rien de particulier',
+    'Défense adverse': `${nf(d.opp_drtg)} pts encaissés /100 possessions`,
+    "Rythme de l'adversaire": `${nf(d.opp_pace)} possessions par match`,
+    "Rythme de l'équipe": `${nf(d.pace)} possessions par match`,
+    'Domicile / extérieur': c.home ? 'à domicile' : "à l'extérieur",
+    'Repos / back-to-back': `${nf(d.rest, 0)} j de repos · adversaire ${nf(d.opp_rest, 0)} j`,
+    'Déplacement': `${nf(d.travel, 0)} km depuis le dernier match`,
+    "Absences dans l'équipe": d.missing > 0 ? `${nf(d.missing, 0)} tirs/match de coéquipiers absents à redistribuer` : 'effectif habituel',
+    'Écart de niveau (risque de blowout)': d.strength == null ? '' : `${nf(Math.abs(d.strength))} pts/100 poss. d'écart ${d.strength >= 0 ? 'en faveur de son équipe' : "en faveur de l'adversaire"} · gros écart = moins de minutes`,
+    'Historique face-à-face': d.h2h == null ? '' : `${d.h2h >= 0 ? '+' : ''}${nf(d.h2h)} pts vs son niveau contre cette équipe (lissé)`,
+    'Retour de blessure': why.includes('revient de blessure') ? 'revient de blessure' : 'pas concerné',
+    'Match contre son ancien club': why.includes('affronte son ancien club') ? 'oui' : 'non',
+    "Points attendus de l'équipe": 'écart avec notre estimation',
+  }[param] || '';
+}
 function detailText(c, param) {
+  if (isNBA()) return detailNBA(c, param);
   const d = c.detail || {};
   return {
     'Forme récente': `${nf(c.last10?.slice(-5).reduce((s, g) => s + (g.xg || 0), 0) / 5, 2)} xG/m sur 5 matchs`,
@@ -184,16 +283,58 @@ function factorHTML(c, f) {
     <span style="text-align:right;font-weight:700;color:${col}">×${nf(f.mult, 2)}</span></div>`;
 }
 
-function viewPlayer(id) {
-  const c = player(id);
-  if (!c) return viewTop();
-  const deg = c.prob * 360, s = c.stats || {}, z = c.zones || [0, 0, 0];
-  const groups = ['player', 'opp', 'ctx', 'book'].map(g => {
+function factorGroups(c) {
+  return ['player', 'opp', 'ctx', 'book'].map(g => {
     const fs = c.factors.filter(f => f.group === g).sort((a, b) => Math.abs(b.mult - 1) - Math.abs(a.mult - 1));
     if (!fs.length) return '';
     const t = fs.reduce((p, f) => p * f.mult, 1);
     return `<div class="gh"><span>${GROUPS[g]}</span><span style="font-size:12px;font-weight:700;color:${t >= 1 ? 'var(--up)' : 'var(--down)'}">total ×${nf(t, 2)}</span></div>` + fs.map(f => factorHTML(c, f)).join('');
   }).join('');
+}
+
+function viewPlayerNBA(id) {
+  const c = player(id);
+  if (!c) return viewTop();
+  const deg = c.prob * 360, s = c.stats || {}, l10 = c.last10 || [];
+  const mx = Math.max(30, ...l10.map(g => g.p || 0));
+  const line = Math.round(20 / mx * 58) + 2;
+  app.innerHTML = `<header>${back('#top', 'Top du soir')}
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+      <div><h1 class="H" style="font-size:34px">${esc(c.name)}</h1>
+        <div class="sub">${c.team} ${c.home ? 'vs' : '@'} ${c.opp}${c.pos ? ' · ' + esc(c.pos) : ''} · rang ${c.rank} ce soir</div>
+        ${c.mood ? `<span class="badge" style="margin-top:6px">${c.mood === 'hot' ? '🔥 En confiance' : '❄️ En difficulté'}</span>` : ''}
+        ${c.status ? `<span class="badge" style="margin-top:6px">⚠️ ${esc(INJ[c.status.toLowerCase()] || c.status)} (rapport de blessures)</span>` : ''}</div>
+      <div class="ring" style="background:conic-gradient(var(--red) 0 ${deg}deg,rgba(255,255,255,.18) ${deg}deg)"><div>
+        <span class="H" style="font-size:30px;line-height:1">${pc(c.prob)}</span><span style="font-size:10px;opacity:.8">20 pts ou +</span></div></div></div>
+    <div class="tiles" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-top:12px">
+      <span class="tile"><b>~${nf(c.pts, 1)}</b><span>points attendus</span></span>
+      <span class="tile"><b>${pc(c.p30)}</b><span>30 points ou plus</span></span>
+      <span class="tile"><b>${s.n20 ?? '–'} sur ${s.gp ?? '–'}</b><span>matchs à 20+ cette saison</span></span></div></header>
+  <main>
+    ${(c.why || []).length ? `<section class="card"><h2 class="H">Dynamique du moment</h2><div class="why" style="margin-top:0">${c.why.map(w => `<span>• ${esc(w)}</span>`).join('')}</div></section>` : ''}
+    <section class="card"><h2 class="H">Pourquoi ${pc(c.prob)}</h2>
+      <p class="note" style="margin:-4px 0 10px">On part de sa base, puis chaque paramètre fait monter (vert) ou baisser (rouge) ses chances.</p>
+      <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg);border-radius:10px;padding:9px 10px;font-size:13px">
+        <span><b>Base du joueur</b><small style="display:block;color:var(--mute)">niveau habituel, volume de tirs, rôle dans l'attaque</small></span>
+        <span class="H big" style="font-size:22px;color:var(--blue)">${pc(c.base)}</span></div>
+      ${factorGroups(c)}
+      <div style="display:flex;justify-content:space-between;border-top:1px solid var(--line);margin-top:12px;padding-top:10px;font-size:13.5px">
+        <span>Après tous les paramètres</span><b>${pc(c.prob)}</b></div></section>
+    <section class="card"><div style="display:flex;justify-content:space-between;align-items:baseline"><h2 class="H" style="margin:0">10 derniers matchs</h2><span class="note" style="margin:0">points · pointillés = 20</span></div>
+      <div class="bars" style="position:relative;height:96px">${l10.map(g => `<span><small>${g.p}</small><i style="height:${Math.round((g.p || 0) / mx * 58) + 2}px;${g.p >= 20 ? 'background:var(--blue)' : ''}"></i><small>${g.m}'</small></span>`).join('')}
+        <div class="p20" style="bottom:${line + 13}px"></div></div>
+      <div class="tiles" style="margin-top:12px">${[[nf(s.pts), 'pts/match'], [nf(s.min), 'minutes'], [nf(s.fga), 'tirs tentés/m'], [nf(s.fg3a), 'à 3 pts/m'],
+        [nf(s.fta), 'lancers/m'], [s.ts == null ? '–' : nf(s.ts) + ' %', 'réussite (TS%)'], [s.best ?? '–', 'record saison'], [s.n20 ?? '–', 'matchs à 20+']]
+        .map(([v, l]) => `<span class="tile"><b>${v}</b><span>${l}</span></span>`).join('')}</div></section>
+    <p class="note">Points attendus et « 30 points ou plus » : estimation à partir de la probabilité 20+ et de la dispersion habituelle de ses points (loi normale, approximation).</p>
+  </main>`;
+}
+
+function viewPlayer(id) {
+  const c = player(id);
+  if (!c) return viewTop();
+  const deg = c.prob * 360, s = c.stats || {}, z = c.zones || [0, 0, 0];
+  const groups = factorGroups(c);
   const mx = Math.max(0.3, ...c.last10.map(g => g.xg || 0));
   app.innerHTML = `<header>${back('#top', 'Top du soir')}
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
@@ -238,8 +379,8 @@ function viewGames() {
           <span class="H" style="font-size:28px">${g.away.abbrev} <span style="color:var(--mute);font-size:18px">@</span> ${g.home.abbrev}</span>
           <span class="note" style="margin:0">${hour(g.start)}</span></div>
         <div style="display:flex;height:6px;border-radius:3px;overflow:hidden;margin:8px 0 4px"><span style="width:${(1 - pw) * 100}%;background:#9fb6e8"></span><span style="width:${pw * 100}%;background:var(--red)"></span></div>
-        <div class="meta" style="justify-content:space-between"><span>${nf(g.away.xg, 1)} buts attendus</span><span>${nf(g.home.xg, 1)} buts attendus</span></div></a>`;
-    }).join('') : '<p class="empty">Pas de match NHL cette nuit.</p>') + '</main>';
+        <div class="meta" style="justify-content:space-between"><span>${nf(g.away[T().teamKey], T().teamDec)} ${T().teamUnit}</span><span>${nf(g.home[T().teamKey], T().teamDec)} ${T().teamUnit}</span></div></a>`;
+    }).join('') : `<p class="empty">${T().none}</p>`) + '</main>';
 }
 
 function viewMatch(id) {
@@ -252,21 +393,21 @@ function viewMatch(id) {
   const cell = (r, side) => {
     const v = r[side], o = r[side === 'home' ? 'away' : 'home'];
     const best = v != null && o != null && (r.better === 'high' ? v > o : v < o);
-    return `<td style="font-weight:${best ? 700 : 400}">${v == null ? '–' : nf(v, r.label.includes('km') || r.label.includes('Jours') ? 0 : 2)}</td>`;
+    return `<td style="font-weight:${best ? 700 : 400}">${v == null ? '–' : nf(v, r.dec ?? (r.label.includes('km') || r.label.includes('Jours') ? 0 : 2))}</td>`;
   };
   app.innerHTML = `<header>${back('#matchs', 'Matchs')}
     <div class="sub" style="display:flex;justify-content:space-between"><span>${hour(g.start)} (Paris)</span><span>${esc(g.venue)}</span></div>
     <div style="display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;margin-top:8px">
-      <div><div class="H" style="font-size:44px;line-height:1">${g.away.abbrev}</div><div class="sub">${nf(g.away.xg, 1)} buts attendus${g.away.book ? ' · bookmakers ' + nf(g.away.book, 1) : ''}</div></div>
+      <div><div class="H" style="font-size:44px;line-height:1">${g.away.abbrev}</div><div class="sub">${nf(g.away[T().teamKey], T().teamDec)} ${T().teamUnit}${g.away.book ? ' · bookmakers ' + nf(g.away.book, 1) : ''}</div></div>
       <span class="H" style="opacity:.7;font-size:22px">@</span>
-      <div style="text-align:right"><div class="H" style="font-size:44px;line-height:1">${g.home.abbrev}</div><div class="sub">${nf(g.home.xg, 1)} buts attendus${g.home.book ? ' · bookmakers ' + nf(g.home.book, 1) : ''}</div></div></div>
+      <div style="text-align:right"><div class="H" style="font-size:44px;line-height:1">${g.home.abbrev}</div><div class="sub">${nf(g.home[T().teamKey], T().teamDec)} ${T().teamUnit}${g.home.book ? ' · bookmakers ' + nf(g.home.book, 1) : ''}</div></div></div>
     <div style="display:flex;height:6px;border-radius:3px;overflow:hidden;margin-top:10px"><span style="width:${(1 - g.home_win) * 100}%;background:#9fb6e8"></span><span style="width:${g.home_win * 100}%;background:var(--red)"></span></div>
     <div class="sub" style="display:flex;justify-content:space-between;margin-top:4px"><span>${pc(1 - g.home_win)} victoire</span><span>${pc(g.home_win)} victoire</span></div></header>
   <main>
-    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px">${gk(g.away)}${gk(g.home)}</div>
-    <section class="card"><table class="cmp"><tr><td style="border:0;color:var(--mute)">${g.away.abbrev}</td><td style="border:0">20 derniers matchs</td><td style="border:0;color:var(--mute)">${g.home.abbrev}</td></tr>
+    ${isNBA() ? '' : `<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px">${gk(g.away)}${gk(g.home)}</div>`}
+    <section class="card"><table class="cmp"><tr><td style="border:0;color:var(--mute)">${g.away.abbrev}</td><td style="border:0">${isNBA() ? '15' : '20'} derniers matchs</td><td style="border:0;color:var(--mute)">${g.home.abbrev}</td></tr>
       ${g.ctx.map(r => `<tr>${cell(r, 'away')}<td>${r.label}</td>${cell(r, 'home')}</tr>`).join('')}</table></section>
-    <h2 class="H" style="margin:4px 4px 8px;font-size:21px">Buteurs probables</h2>
+    <h2 class="H" style="margin:4px 4px 8px;font-size:21px">${T().probe}</h2>
     ${g.players.map(player).filter(Boolean).map(rowHTML).join('')}</main>`;
 }
 
@@ -297,7 +438,7 @@ function ticketHTML(t) {
 }
 function viewTickets() {
   const [st, cls] = STAGE[D.stage] || STAGE.update;
-  if (!D.games.length) { app.innerHTML = '<header><h1 class="H">Tickets</h1></header><main><p class="empty">Pas de match NHL cette nuit.</p></main>'; return; }
+  if (!D.games.length) { app.innerHTML = `<header><h1 class="H">Tickets</h1></header><main><p class="empty">${T().none}</p></main>`; return; }
   const none = new Set();
   const tickets = [
     {title: 'Solo', sub: 'le joueur le plus probable de la nuit', level: 'Le plus sûr', color: '#16653a', players: pickTicket(1, none)},
@@ -308,67 +449,76 @@ function viewTickets() {
       <div><div class="sub">${night()}</div><h1 class="H">Tickets du soir</h1></div><span class="badge ${cls}">${st} · ${updated()}</span></div></header>
     <main>${tickets.map(ticketHTML).join('')}
     <section class="card"><h2 class="H">Comment lire un ticket</h2>
-      <p style="margin:0 0 8px;font-size:14px"><b>Chance que tout passe</b> : la probabilité que <i>tous</i> les joueurs du ticket marquent. Même le Solo passe moins d'une fois sur deux : un but reste rare.</p>
+      <p style="margin:0 0 8px;font-size:14px"><b>Chance que tout passe</b> : la probabilité que <i>tous</i> les joueurs du ticket ${isNBA() ? 'marquent 20 points ou plus' : 'marquent'}. ${T().ticketRisk}</p>
       <p style="margin:0 0 8px;font-size:14px"><b>Cote juste</b> : la cote à partir de laquelle le pari devient intéressant d'après le modèle. Si un site propose <i>moins</i>, il garde l'avantage.</p>
-      <p style="margin:0;font-size:14px">Les tickets sont plus fiables avec la <b>version finale</b> (minuit) : alignements et gardiens à jour.</p></section>
-    <p class="note">Probabilités combinées en supposant les buts indépendants (approximation). Jouer comporte des risques : endettement, dépendance… Appelez le 09 74 75 13 13 (appel non surtaxé).</p></main>`;
+      <p style="margin:0;font-size:14px">Les tickets sont plus fiables avec la <b>version finale</b> (juste avant les matchs) : ${isNBA() ? 'blessures et absences' : 'alignements et gardiens'} à jour.</p></section>
+    <p class="note">Probabilités combinées en supposant les joueurs indépendants (approximation). Jouer comporte des risques : endettement, dépendance… Appelez le 09 74 75 13 13 (appel non surtaxé).</p></main>`;
 }
 
 
 function recapHTML() {
   if (!R) return '<section class="card"><h2 class="H">Récap de la dernière soirée</h2><p class="note" style="margin:0">Disponible le matin après la première soirée vérifiée.</p></section>';
   const day = new Date(R.date + 'T12:00:00').toLocaleDateString('fr-FR', {weekday: 'long', day: 'numeric', month: 'long'});
-  const ok = b => `<span class="badge ${b ? 'b-ok' : 'b-pr'}">${b ? 'But ✓' : 'Raté'}</span>`;
-  const tk = Object.entries(R.tickets).map(([n, t]) => `<tr><td><b style="font-weight:600">${n}</b><br><span class="note" style="margin:0">${t.players.map(p => esc(p.name) + (p.scored ? ' ✓' : ' ✗')).join(' · ')}</span></td>
-    <td style="text-align:right;color:var(--mute)">${(t.prob * 100).toLocaleString('fr-FR', {maximumFractionDigits: 1})} %</td>
+  // NHL : c.goals ; NBA : c.hit et c.pts (points réels).
+  const hitOf = c => c.hit ?? (c.goals > 0);
+  const ok = c => `<span class="badge ${hitOf(c) ? 'b-ok' : 'b-pr'}">${c.pts != null ? c.pts + ' pts' + (hitOf(c) ? ' ✓' : '') : hitOf(c) ? T().hitWord : T().missWord}</span>`;
+  const tk = Object.entries(R.tickets).map(([n, t]) => `<tr><td><b style="font-weight:600">${n}</b><br><span class="note" style="margin:0">${t.players.map(p => esc(p.name) + (p.pts != null ? ' ' + p.pts : '') + (p.scored ? ' ✓' : ' ✗')).join(' · ')}</span></td>
+    <td style="text-align:right;color:var(--mute);white-space:nowrap">${(t.prob * 100).toLocaleString('fr-FR', {maximumFractionDigits: 1})} %</td>
     <td style="text-align:right;width:84px"><span class="badge ${t.passed ? 'b-ok' : 'b-pr'}">${t.passed ? 'Gagné' : 'Perdu'}</span></td></tr>`).join('');
   return `<section class="card"><h2 class="H">Récap · ${day}</h2>
     <div class="tiles" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:10px">
-      <span class="tile"><b>${R.top10_hits} / 10</b><span>buteurs dans le top 10</span></span>
-      <span class="tile"><b>${R.actual}</b><span>buteurs (${nf(R.expected, 1)} attendus)</span></span>
+      <span class="tile"><b>${R.top10_hits} / 10</b><span>${T().unit} dans le top 10</span></span>
+      <span class="tile"><b>${R.actual}</b><span>${T().unit} (${nf(R.expected, 1)} attendus)</span></span>
       <span class="tile"><b>${R.games.length}</b><span>matchs</span></span></div>
     <table>${R.top10.map(c => `<tr><td>${c.rank}. ${c.mood === 'hot' ? '🔥 ' : c.mood === 'cold' ? '❄️ ' : ''}${esc(c.name)} <span class="note" style="margin:0">${c.team}</span></td>
-      <td style="text-align:right;color:var(--mute)">${pc(c.prob)}</td><td style="text-align:right;width:84px">${ok(c.goals > 0)}</td></tr>`).join('')}</table></section>
+      <td style="text-align:right;color:var(--mute)">${pc(c.prob)}</td><td style="text-align:right;width:84px">${ok(c)}</td></tr>`).join('')}</table></section>
   <section class="card"><h2 class="H">Les tickets</h2><table>${tk}</table></section>
   <section class="card"><h2 class="H">Surprises et badges</h2>
-    <p style="margin:0 0 6px;font-size:14px">Buteurs les moins attendus : ${R.surprises.map(c => `<b style="font-weight:600">${esc(c.name)}</b> (${pc(c.prob)})`).join(', ') || 'aucun'}.</p>
-    <p style="margin:0;font-size:14px">🔥 ${R.hot.scored} buteurs sur ${R.hot.n} (${nf(R.hot.expected, 1)} attendus) · ❄️ ${R.cold.scored} sur ${R.cold.n} (${nf(R.cold.expected, 1)} attendus)</p></section>`;
+    <p style="margin:0 0 6px;font-size:14px">${isNBA() ? 'Joueurs à 20+ les moins attendus' : 'Buteurs les moins attendus'} : ${R.surprises.map(c => `<b style="font-weight:600">${esc(c.name)}</b> (${pc(c.prob)}${c.pts != null ? ', ' + c.pts + ' pts' : ''})`).join(', ') || 'aucun'}.</p>
+    <p style="margin:0;font-size:14px">🔥 ${R.hot.scored} ${T().unit} sur ${R.hot.n} (${nf(R.hot.expected, 1)} attendus) · ❄️ ${R.cold.scored} sur ${R.cold.n} (${nf(R.cold.expected, 1)} attendus)</p></section>`;
 }
 
 function viewPrecision() {
   const live = P.source === 'live', b = live ? P : (P.backtest || M.backtest);
   const head = b && b.calibration && b.calibration.length ? b.calibration[Math.min(3, b.calibration.length - 1)] : null;
-  const title = head ? `Quand l'app dit ${Math.round(head.pred * 100)} %, ils marquent ${Math.round(head.obs * 100)} % du temps` : 'Fiabilité du modèle';
+  const title = head ? T().calib(Math.round(head.pred * 100), Math.round(head.obs * 100)) : 'Fiabilité du modèle';
+  const sc = isNBA() ? 100 : 180;   // échelle des barres (les probabilités NBA montent bien plus haut)
   app.innerHTML = `<header><div class="sub">${live ? `${P.nights} soirées réelles · ${P.n} prédictions` : b ? `Test sur ${b.nights} soirées passées (${b.period?.[0]} → ${b.period?.[1]})` : ''}</div>
     <h1 class="H">Bilan</h1></header><main>${recapHTML()}<h2 class="H" style="margin:14px 4px 4px;font-size:22px">Fiabilité dans la durée</h2><p class="note" style="margin:0 4px 10px;font-size:14px">${title}</p>
-    ${b ? `<section class="card"><h2 class="H">Prévu vs réel</h2><p class="note" style="margin:-4px 0 10px">Clair : probabilité annoncée · foncé : taux de buts observé</p>
+    ${b ? `<section class="card"><h2 class="H">Prévu vs réel</h2><p class="note" style="margin:-4px 0 10px">Clair : probabilité annoncée · foncé : taux ${isNBA() ? 'de 20+' : 'de buts'} observé</p>
       ${b.calibration.map(c => `<div class="hbar" style="grid-template-columns:62px minmax(0,1fr) 40px"><span style="color:var(--mute)">${c.bin}</span>
-        <span style="display:flex;flex-direction:column;gap:3px"><span class="track" style="background:none"><i style="width:${c.pred * 180}%;background:#b9cbef"></i></span>
-        <span class="track" style="background:none"><i style="width:${c.obs * 180}%;background:var(--blue)"></i></span></span><b style="text-align:right">${Math.round(c.obs * 100)} %</b></div>`).join('')}</section>
+        <span style="display:flex;flex-direction:column;gap:3px"><span class="track" style="background:none"><i style="width:${c.pred * sc}%;background:var(--soft);opacity:.55"></i></span>
+        <span class="track" style="background:none"><i style="width:${c.obs * sc}%;background:var(--blue)"></i></span></span><b style="text-align:right">${Math.round(c.obs * 100)} %</b></div>`).join('')}</section>
     <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px">
-      <div class="card" style="margin:0"><div class="H big" style="font-size:30px;color:var(--blue)">${nf(b.top10_hits, 1)} / 10</div><p class="note" style="margin:4px 0 0">buteurs en moyenne dans le top 10 du soir</p></div>
-      <div class="card" style="margin:0"><div class="H" style="font-size:30px;color:var(--up)">${(g => g != null ? (g >= 0 ? '+' : '') + nf(g, 0) + ' %' : '–')(b.gain_vs_naive ?? (P.backtest || M.backtest)?.gain_vs_naive)}</div><p class="note" style="margin:4px 0 0">de buteurs trouvés en plus qu'un classement aux buts de la saison</p></div></div>` : '<p class="empty">Le modèle n\'a pas encore été entraîné.</p>'}
+      <div class="card" style="margin:0"><div class="H big" style="font-size:30px;color:var(--blue)">${nf(b.top10_hits, 1)} / 10</div><p class="note" style="margin:4px 0 0">${T().unit} en moyenne dans le top 10 du soir</p></div>
+      <div class="card" style="margin:0"><div class="H" style="font-size:30px;color:var(--up)">${(g => g != null ? (g >= 0 ? '+' : '') + nf(g, 0) + ' %' : '–')(b.gain_vs_naive ?? (P.backtest || M.backtest)?.gain_vs_naive)}</div><p class="note" style="margin:4px 0 0">${T().naive}</p></div></div>` : '<p class="empty">Le modèle n\'a pas encore été entraîné.</p>'}
     ${P.last_night ? `<section class="card"><h2 class="H">Dernière soirée · top 5</h2><table>${P.last_night.top.map(t =>
-      `<tr><td>${esc(t.name)}</td><td style="text-align:right;color:var(--mute)">${pc(t.prob)}</td><td style="text-align:right;width:84px"><span class="badge ${t.scored ? 'b-ok' : 'b-pr'}">${t.scored ? 'But ✓' : 'Raté'}</span></td></tr>`).join('')}</table></section>` : ''}
+      `<tr><td>${esc(t.name)}</td><td style="text-align:right;color:var(--mute)">${pc(t.prob)}</td><td style="text-align:right;width:84px"><span class="badge ${t.scored ? 'b-ok' : 'b-pr'}">${t.pts != null ? t.pts + ' pts' + (t.scored ? ' ✓' : '') : t.scored ? T().hitWord : T().missWord}</span></td></tr>`).join('')}</table></section>` : ''}
     <p class="note">${live ? 'Calculé sur les prédictions finales réelles de l\'app.' : 'Chiffres du test sur les saisons passées, en attendant 10 soirées réelles.'}</p></main>`;
 }
 
 function viewModel() {
   const imp = M.importance || [], mx = Math.max(1, ...imp.map(x => x.share));
-  app.innerHTML = `<header><h1 class="H" style="font-size:34px">Ce qui compte le plus pour marquer</h1>
-    <div class="sub">${imp.length} paramètres · appris sur les saisons ${esc(M.seasons || '')}</div></header><main>
-    <section class="card"><h2 class="H">Poids de chaque paramètre</h2><p class="note" style="margin:-4px 0 10px">Part de la prédiction expliquée par chacun, mesurée sur les matchs passés.</p>
-      ${imp.length ? imp.map(x => `<div class="hbar"><span>${esc(x.param)}</span><span class="track"><i style="width:${x.share / mx * 100}%;background:${GCOL[x.group]}"></i></span><b style="text-align:right">${nf(x.share)} %</b></div>`).join('') : '<p class="note">Disponible après le premier entraînement.</p>'}
-      <div class="meta" style="margin-top:10px;gap:12px">${Object.entries(GROUPS).map(([k, l]) => `<span style="display:flex;align-items:center;gap:5px"><i style="width:10px;height:10px;border-radius:2px;background:${GCOL[k]}"></i>${l}</span>`).join('')}</div></section>
-    <section class="card"><h2 class="H">Sources et mises à jour</h2><table>${[
+  const src = isNBA() ? [
+      ['NBA.com', 'calendrier, feuilles de match joueur par joueur, résultats', 'chaque heure'],
+      ['Rapport de blessures', 'ESPN : joueurs « Out » retirés, « incertains » signalés', 'chaque passage'],
+      ['Cotes bookmakers', D?.books ? "points attendus par équipe (total et écart)" : 'non connectées (clé API absente)', 'chaque passage'],
+      ['Résultats', 'chaque prédiction finale est vérifiée', 'chaque matin'],
+      ['Ré-entraînement', 'le modèle réapprend les poids', 'chaque lundi']] : [
       ['API NHL officielle', 'calendrier, effectifs, gardiens, résultats', '3×/jour'],
       ['MoneyPuck.com', 'xG par tir, temps de glace, gardiens, équipes', 'chaque nuit'],
       ['Gardiens probables', 'déduits de la rotation et des back-to-back', '9h · 18h · 0h'],
       ['Cotes bookmakers', D?.books ? 'total de buts par équipe' : 'non connectées (clé API absente)', '3×/jour'],
       ['Résultats', 'chaque prédiction finale est vérifiée', 'chaque matin'],
-      ['Ré-entraînement', 'le modèle réapprend les poids', 'chaque lundi']]
+      ['Ré-entraînement', 'le modèle réapprend les poids', 'chaque lundi']];
+  app.innerHTML = `<header><h1 class="H" style="font-size:34px">${T().modelTitle}</h1>
+    <div class="sub">${imp.length} paramètres · appris sur les saisons ${esc(M.seasons || '')}</div></header><main>
+    <section class="card"><h2 class="H">Poids de chaque paramètre</h2><p class="note" style="margin:-4px 0 10px">Part de la prédiction expliquée par chacun, mesurée sur les matchs passés.</p>
+      ${imp.length ? imp.map(x => `<div class="hbar"><span>${esc(x.param)}</span><span class="track"><i style="width:${x.share / mx * 100}%;background:${GCOL[x.group]}"></i></span><b style="text-align:right">${nf(x.share)} %</b></div>`).join('') : '<p class="note">Disponible après le premier entraînement.</p>'}
+      <div class="meta" style="margin-top:10px;gap:12px">${Object.entries(GROUPS).map(([k, l]) => `<span style="display:flex;align-items:center;gap:5px"><i style="width:10px;height:10px;border-radius:2px;background:${GCOL[k]}"></i>${l}</span>`).join('')}</div></section>
+    <section class="card"><h2 class="H">Sources et mises à jour</h2><table>${src
       .map(([n, d, t]) => `<tr><td><b style="font-weight:600">${n}</b><br><span class="note" style="margin:0">${d}</span></td><td style="text-align:right;color:var(--mute);white-space:nowrap">${t}</td></tr>`).join('')}</table></section>
-    <p class="note">Données xG : MoneyPuck.com.</p></main>`;
+    <p class="note">${T().credit}</p></main>`;
 }
 }
 </script>
