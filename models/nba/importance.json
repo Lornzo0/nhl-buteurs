@@ -1,0 +1,112 @@
+[
+ {
+  "param": "Rôle offensif",
+  "group": "player",
+  "share": 51.7
+ },
+ {
+  "param": "Niveau habituel",
+  "group": "player",
+  "share": 37.6
+ },
+ {
+  "param": "Confiance & séries",
+  "group": "player",
+  "share": 1.2
+ },
+ {
+  "param": "Forme récente",
+  "group": "player",
+  "share": 1.1
+ },
+ {
+  "param": "Volume de tirs",
+  "group": "player",
+  "share": 1.0
+ },
+ {
+  "param": "Lancers francs provoqués",
+  "group": "player",
+  "share": 1.0
+ },
+ {
+  "param": "Minutes projetées",
+  "group": "player",
+  "share": 1.0
+ },
+ {
+  "param": "Absences dans l'équipe",
+  "group": "ctx",
+  "share": 0.7
+ },
+ {
+  "param": "Régularité à 20+",
+  "group": "player",
+  "share": 0.6
+ },
+ {
+  "param": "Défense adverse",
+  "group": "opp",
+  "share": 0.6
+ },
+ {
+  "param": "Rythme de l'adversaire",
+  "group": "opp",
+  "share": 0.6
+ },
+ {
+  "param": "Adresse",
+  "group": "player",
+  "share": 0.5
+ },
+ {
+  "param": "Historique face-à-face",
+  "group": "ctx",
+  "share": 0.5
+ },
+ {
+  "param": "Expérience",
+  "group": "player",
+  "share": 0.4
+ },
+ {
+  "param": "Écart de niveau (risque de blowout)",
+  "group": "ctx",
+  "share": 0.4
+ },
+ {
+  "param": "Rythme de l'équipe",
+  "group": "ctx",
+  "share": 0.3
+ },
+ {
+  "param": "Déplacement",
+  "group": "ctx",
+  "share": 0.2
+ },
+ {
+  "param": "Retour de blessure",
+  "group": "ctx",
+  "share": 0.2
+ },
+ {
+  "param": "Titulaire",
+  "group": "player",
+  "share": 0.1
+ },
+ {
+  "param": "Repos / back-to-back",
+  "group": "ctx",
+  "share": 0.1
+ },
+ {
+  "param": "Domicile / extérieur",
+  "group": "ctx",
+  "share": 0.0
+ },
+ {
+  "param": "Match contre son ancien club",
+  "group": "ctx",
+  "share": 0.0
+ }
+]
