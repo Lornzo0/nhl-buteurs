@@ -8,10 +8,10 @@ DOCS = ROOT / "docs" / "nba"              # données de l'app (GitHub Pages)
 
 THRESHOLD = 20                            # le « 20+ » de l'app
 
-STATS = "https://stats.nba.com/stats"
-CDN_SCHEDULE = "https://cdn.nba.com/static/json/staticData/scheduleLeagueV2.json"
-CDN_BOX = "https://cdn.nba.com/static/json/liveData/boxscore/boxscore_{gid}.json"
-ESPN_INJURIES = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/injuries"
+ESPN = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba"
+ESPN_SCOREBOARD = ESPN + "/scoreboard"
+ESPN_SUMMARY = ESPN + "/summary"
+ESPN_INJURIES = ESPN + "/injuries"
 ODDS_URL = "https://api.the-odds-api.com/v4/sports/basketball_nba/odds"
 
 # Saison = année de début (2026 = saison 2026-27).

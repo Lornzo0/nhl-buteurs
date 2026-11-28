@@ -16,7 +16,7 @@ def load_history(seasons):
     frames = [S.game_logs(s) for s in seasons]
     frames = [f for f in frames if len(f)]
     if not frames:
-        raise SystemExit("Aucune donnée NBA téléchargée (stats.nba.com et le CDN NBA ne répondent pas).")
+        raise SystemExit("Aucune donnée NBA téléchargée (ESPN ne répond pas).")
     return pd.concat(frames, ignore_index=True)
 
 

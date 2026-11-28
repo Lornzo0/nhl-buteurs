@@ -18,7 +18,7 @@ def hit(c):
 
 
 def _fallback_points():
-    """Si le CDN ne répond pas : points de la saison en cours via stats.nba.com."""
+    """Si la feuille de match ne répond pas : points de la saison en cours (même source, en cache)."""
     try:
         logs = S.game_logs(C.CURRENT_SEASON)
     except SystemExit:

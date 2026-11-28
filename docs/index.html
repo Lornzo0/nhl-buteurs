@@ -117,7 +117,7 @@ const SP = {
     teamKey: 'pts', teamUnit: 'pts attendus', teamDec: 0, probe: 'Joueurs à 20+ probables',
     calib: (a, b) => `Quand l'app dit ${a} %, ils passent 20 points ${b} % du temps`,
     naive: "de joueurs à 20+ trouvés en plus qu'un classement à la moyenne de points",
-    modelTitle: 'Ce qui compte pour passer 20 points', credit: 'Données : NBA.com (statistiques et feuilles de match), ESPN (blessures).',
+    modelTitle: 'Ce qui compte pour passer 20 points', credit: 'Données : ESPN (calendrier, feuilles de match, blessures).',
     ticketRisk: "Même le Solo n'est jamais garanti : un soir sans réussite arrive à tous les marqueurs."},
 };
 let SPORT = (() => {
@@ -500,7 +500,7 @@ function viewPrecision() {
 function viewModel() {
   const imp = M.importance || [], mx = Math.max(1, ...imp.map(x => x.share));
   const src = isNBA() ? [
-      ['NBA.com', 'calendrier, feuilles de match joueur par joueur, résultats', 'chaque heure'],
+      ['ESPN', 'calendrier, feuilles de match joueur par joueur, résultats', 'chaque heure'],
       ['Rapport de blessures', 'ESPN : joueurs « Out » retirés, « incertains » signalés', 'chaque passage'],
       ['Cotes bookmakers', D?.books ? "points attendus par équipe (total et écart)" : 'non connectées (clé API absente)', 'chaque passage'],
       ['Résultats', 'chaque prédiction finale est vérifiée', 'chaque matin'],

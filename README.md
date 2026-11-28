@@ -42,8 +42,8 @@ marque **20 points ou plus** (filtre 30+ disponible). Lien direct : `…/nhl-but
 
 - Code : `nba/` (même structure que `nhl/`), tâche `.github/workflows/nba.yml` (toutes les heures à :47, ré-entraînement le lundi).
 - Données publiées dans `docs/nba/`, modèle dans `models/nba/`, archives dans `history/nba/`.
-- Sources : stats.nba.com (feuilles de match, une requête par saison). Si le site bloque les serveurs GitHub,
-  repli automatique sur les feuilles de match de cdn.nba.com (plus long la première fois, puis en cache).
-  Blessures : ESPN. Cotes : même clé `ODDS_API_KEY` (total et écart par équipe).
+- Sources : API publique d'ESPN pour tout (calendrier, feuilles de match, blessures) : stats.nba.com et
+  cdn.nba.com refusent les serveurs de GitHub. Le premier entraînement télécharge chaque feuille de match
+  (quelques minutes), ensuite tout est en cache. Cotes : même clé `ODDS_API_KEY` (total et écart par équipe).
 - Première mise en route : Actions → « NBA — prédictions 20+ et résultats » → Run workflow → `train`, puis `update`.
 - Test hors ligne : `python -m tests.simulate_nba`.

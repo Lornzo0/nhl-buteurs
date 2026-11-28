@@ -1,11 +1,13 @@
-"""Sources de données NBA.
+"""Sources de données NBA (tout vient d'ESPN, joignable depuis GitHub Actions).
 
-  - stats.nba.com (leaguegamelog) : feuilles de match joueur par joueur, une
-    requête par saison. Le site bloque parfois les serveurs cloud : dans ce cas
-    on reconstruit les mêmes données à partir des feuilles de match du CDN NBA.
-  - cdn.nba.com : calendrier de la saison et feuilles de match (résultats).
-  - ESPN : rapport de blessures (joueurs « Out » retirés de l'alignement).
-  - The Odds API (optionnel, ODDS_API_KEY) : total de points et écart par équipe.
+stats.nba.com et cdn.nba.com refusent les serveurs de GitHub : on utilise
+donc l'API publique d'ESPN pour tout, ce qui garde des identifiants de
+joueurs cohérents entre l'historique, les prédictions et les résultats.
+
+  - scoreboard?dates=AAAAMMJJ : matchs d'une soirée (date de New York)
+  - summary?event=ID : feuille de match joueur par joueur
+  - injuries : rapport de blessures (joueurs « Out » retirés)
+  - The Odds API (optionnel, ODDS_API_KEY) : total de points et écart par équipe
 """
 import json
 import os
@@ -13,7 +15,8 @@ import re
 import sys
 import time
 import unicodedata
-from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor
+from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 import pandas as pd
@@ -22,29 +25,28 @@ import requests
 from . import config as C
 
 S = requests.Session()
-S.headers["User-Agent"] = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
-                           "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
-STATS_HEADERS = {"Referer": "https://www.nba.com/", "Origin": "https://www.nba.com",
-                 "Accept": "application/json, text/plain, */*", "x-nba-stats-origin": "stats",
-                 "x-nba-stats-token": "true"}
+S.headers["User-Agent"] = "nhl-buteurs/2.0 (projet perso non commercial)"
+S.mount("https://", requests.adapters.HTTPAdapter(pool_maxsize=16))
 NY = ZoneInfo("America/New_York")
 LOG_COLS = ["player_id", "name", "team", "opp", "home", "game_id", "date", "season", "min", "pts",
             "fga", "fgm", "fg3a", "fg3m", "fta", "ftm", "oreb", "reb", "ast", "tov", "starter"]
+GAME_TYPES = {2, 3, 5}          # saison régulière, séries, play-in
+WORKERS = 8
 
 
-def http(url, params=None, headers=None, retries=3, timeout=60):
+def http(url, params=None, retries=3, timeout=30):
     for i in range(retries):
         try:
-            r = S.get(url, params=params, headers=headers, timeout=timeout)
-            if r.status_code in (403, 404):
+            r = S.get(url, params=params, timeout=timeout)
+            if r.status_code == 404:
                 return None
             r.raise_for_status()
             return r.json()
         except (requests.RequestException, ValueError) as e:
             if i == retries - 1:
-                print(f"! échec {url}: {e}", file=sys.stderr)
+                print(f"! échec {url} {params or ''}: {e}", file=sys.stderr)
                 return None
-            time.sleep(3 * (i + 1))
+            time.sleep(2 * (i + 1))
 
 
 def fix(t):
@@ -61,143 +63,181 @@ def norm_name(s):
     return re.sub(r"[^a-z]", "", s)
 
 
+def _cache_dir(name):
+    p = C.CACHE / name
+    p.mkdir(parents=True, exist_ok=True)
+    return p
+
+
+# ---------------------------------------------------------------- calendrier
+
+def scoreboard(day, cache=False):
+    """Matchs ESPN d'une soirée (liste brute d'événements)."""
+    f = _cache_dir("scoreboard") / f"{day:%Y%m%d}.json"
+    if cache and f.exists():
+        return json.loads(f.read_text())
+    data = http(C.ESPN_SCOREBOARD, params={"dates": f"{day:%Y%m%d}", "limit": 50})
+    if data is None:
+        return None
+    events = data.get("events", [])
+    done = all(((ev.get("status") or {}).get("type") or {}).get("completed")
+               or ((ev.get("status") or {}).get("type") or {}).get("state") == "post" for ev in events)
+    if cache and done:                   # on ne fige une soirée qu'une fois tous ses matchs finis
+        f.write_text(json.dumps(events))
+    return events
+
+
+def _game(ev, day):
+    comp = (ev.get("competitions") or [{}])[0]
+    stype = (ev.get("season") or {}).get("type") or (comp.get("type") or {}).get("id")
+    try:
+        stype = int(stype)
+    except (TypeError, ValueError):
+        stype = 2
+    if stype not in GAME_TYPES:
+        return None
+    teams = {c.get("homeAway"): c for c in comp.get("competitors", [])}
+    if "home" not in teams or "away" not in teams:
+        return None
+    h, a = teams["home"]["team"], teams["away"]["team"]
+    st = (comp.get("status") or ev.get("status") or {}).get("type", {})
+    return {"game_id": str(ev["id"]), "day": day.isoformat(), "start": ev.get("date"),
+            "state": st.get("state"), "final": bool(st.get("completed")),
+            "home": fix(h.get("abbreviation")), "away": fix(a.get("abbreviation")),
+            "home_name": h.get("shortDisplayName") or h.get("name") or h.get("abbreviation"),
+            "away_name": a.get("shortDisplayName") or a.get("name") or a.get("abbreviation"),
+            "venue": (comp.get("venue") or {}).get("fullName", "")}
+
+
+def schedule(day):
+    """Matchs d'une soirée NBA (date à l'heure de New York)."""
+    return [g for g in (_game(ev, day) for ev in (scoreboard(day) or [])) if g]
+
+
 # ---------------------------------------------------------------- feuilles de match
 
-def _cache_path(name):
-    C.CACHE.mkdir(parents=True, exist_ok=True)
-    return C.CACHE / name
+def _split(v):
+    m = re.match(r"(\d+)-(\d+)", str(v))
+    return (int(m.group(1)), int(m.group(2))) if m else (0, 0)
+
+
+def _num(v):
+    try:
+        return float(str(v).replace("+", ""))
+    except ValueError:
+        return 0.0
+
+
+def box(gid):
+    """Feuille de match ESPN : (terminé ?, lignes joueurs) ; (None, []) si injoignable."""
+    data = http(C.ESPN_SUMMARY, params={"event": gid})
+    if not data:
+        return None, []
+    comp = ((data.get("header") or {}).get("competitions") or [{}])[0]
+    final = bool(((comp.get("status") or {}).get("type") or {}).get("completed"))
+    side = {c.get("team", {}).get("abbreviation"): c.get("homeAway") for c in comp.get("competitors", [])}
+    blocks = (data.get("boxscore") or {}).get("players", [])
+    abbrs = [b.get("team", {}).get("abbreviation") for b in blocks]
+    rows = []
+    for b in blocks:
+        team = b.get("team", {}).get("abbreviation")
+        opp = next((x for x in abbrs if x != team), None)
+        for st in b.get("statistics", []):
+            labels = [str(x).upper() for x in (st.get("labels") or st.get("names") or [])]
+            for a in st.get("athletes", []):
+                vals = a.get("stats") or []
+                if a.get("didNotPlay") or len(vals) != len(labels):
+                    continue
+                s = dict(zip(labels, vals))
+                mins = _num(s.get("MIN", 0))
+                if mins <= 0:
+                    continue
+                fgm, fga = _split(s.get("FG"))
+                f3m, f3a = _split(s.get("3PT"))
+                ftm, fta = _split(s.get("FT"))
+                ath = a.get("athlete") or {}
+                rows.append({
+                    "player_id": int(ath["id"]), "name": ath.get("displayName", ""),
+                    "team": fix(team), "opp": fix(opp), "home": int(side.get(team) == "home"),
+                    "game_id": str(gid), "min": mins, "pts": int(_num(s.get("PTS", 0))),
+                    "fga": fga, "fgm": fgm, "fg3a": f3a, "fg3m": f3m, "fta": fta, "ftm": ftm,
+                    "oreb": int(_num(s.get("OREB", 0))), "reb": int(_num(s.get("REB", 0))),
+                    "ast": int(_num(s.get("AST", 0))), "tov": int(_num(s.get("TO", 0))),
+                    "starter": 1.0 if a.get("starter") else 0.0})
+    return final, rows
+
+
+def boxscore_points(gid):
+    """{player_id: points} pour un match terminé, ou None s'il n'est pas fini / introuvable."""
+    final, rows = box(gid)
+    if not final:
+        return None
+    return {r["player_id"]: r["pts"] for r in rows}
 
 
 def game_logs(season):
-    """Une ligne par joueur et par match joué d'une saison (saison régulière + play-in + séries)."""
-    p = _cache_path(f"logs_{season}.csv.gz")
+    """Une ligne par joueur et par match joué d'une saison (saison régulière + play-in + séries).
+
+    Chaque soirée et chaque feuille de match est mise en cache : la première
+    saison prend quelques minutes, les passages suivants ne téléchargent que
+    les nouveaux matchs."""
+    p = C.CACHE / f"logs_{season}.csv.gz"
     max_age = 5 if season == C.CURRENT_SEASON else 24 * 30
     if p.exists() and (time.time() - p.stat().st_mtime) < max_age * 3600:
         return _typed(pd.read_csv(p, dtype={"game_id": str}))
-    d = _stats_logs(season)
-    if d is None or d.empty:
-        print(f"  stats.nba.com indisponible pour {season_str(season)} : feuilles de match du CDN")
-        d = _cdn_logs(season)
-    if d is None or d.empty:
+    today = datetime.now(NY).date()
+    day, end = date(season, 10, 1), min(date(season + 1, 6, 30), today - timedelta(days=1))
+    days = []
+    while day <= end:
+        days.append(day)
+        day += timedelta(days=1)
+    print(f"  ESPN : saison {season_str(season)}, {len(days)} jours")
+    with ThreadPoolExecutor(WORKERS) as ex:
+        boards = list(ex.map(lambda d: (d, scoreboard(d, cache=True)), days))
+    games = []
+    fails = sum(1 for _, ev in boards if ev is None)
+    if fails > len(days) // 2:
+        print(f"  ! ESPN ne répond pas ({fails} soirées sur {len(days)} en échec)", file=sys.stderr)
+    for d, evs in boards:
+        for ev in evs or []:
+            g = _game(ev, d)
+            if g and g["final"]:
+                games.append(g)
+    bdir = _cache_dir(f"box_{season}")
+
+    def one(g):
+        f = bdir / f"{g['game_id']}.json"
+        if f.exists():
+            rows = json.loads(f.read_text())
+        else:
+            final, rows = box(g["game_id"])
+            if not final:
+                return []
+            f.write_text(json.dumps(rows))
+        for r in rows:
+            r["date"] = g["day"]
+        return rows
+    with ThreadPoolExecutor(WORKERS) as ex:
+        rows = [r for rs in ex.map(one, games) for r in rs]
+    print(f"    {len(games)} matchs, {len(rows):,} lignes joueurs")
+    d = pd.DataFrame(rows, columns=[c for c in LOG_COLS if c != "season"])
+    if d.empty:
         if p.exists():
             print("  (on garde la copie en cache)")
             return _typed(pd.read_csv(p, dtype={"game_id": str}))
         return pd.DataFrame(columns=LOG_COLS)
+    d["season"] = season
     d.to_csv(p, index=False)
     return _typed(d)
 
 
 def _typed(d):
     d = d.copy()
-    d["game_id"] = d["game_id"].astype(str).str.zfill(10)
+    d["game_id"] = d["game_id"].astype(str)
     d["date"] = pd.to_datetime(d["date"])
     for c in ("team", "opp"):
         d[c] = d[c].map(fix)
     return d[LOG_COLS]
-
-
-def _stats_logs(season):
-    frames = []
-    for stype in ("Regular Season", "PlayIn", "Playoffs"):
-        data = http(C.STATS + "/leaguegamelog", headers=STATS_HEADERS, timeout=45, params={
-            "Counter": 0, "Direction": "ASC", "LeagueID": "00", "PlayerOrTeam": "P",
-            "Season": season_str(season), "SeasonType": stype, "Sorter": "DATE"})
-        if data is None:
-            if stype == "Regular Season":
-                return None
-            continue
-        rs = data["resultSets"][0]
-        frames.append(pd.DataFrame(rs["rowSet"], columns=rs["headers"]))
-        time.sleep(1)
-    if not frames:
-        return None
-    raw = pd.concat(frames, ignore_index=True)
-    need = ["PLAYER_ID", "PLAYER_NAME", "TEAM_ABBREVIATION", "GAME_ID", "GAME_DATE", "MATCHUP", "MIN",
-            "PTS", "FGA", "FGM", "FG3A", "FG3M", "FTA", "FTM", "OREB", "REB", "AST", "TOV"]
-    missing = [c for c in need if c not in raw.columns]
-    if missing:
-        sys.exit(f"Colonnes stats.nba.com introuvables : {missing}\nDisponibles : {list(raw.columns)}")
-    m = raw["MATCHUP"].astype(str)
-    d = pd.DataFrame({
-        "player_id": raw["PLAYER_ID"].astype(int), "name": raw["PLAYER_NAME"],
-        "team": raw["TEAM_ABBREVIATION"], "opp": m.str.split().str[-1],
-        "home": m.str.contains("vs").astype(int), "game_id": raw["GAME_ID"].astype(str),
-        "date": raw["GAME_DATE"].astype(str).str[:10], "season": season,
-        "min": pd.to_numeric(raw["MIN"], errors="coerce").fillna(0),
-        "pts": raw["PTS"], "fga": raw["FGA"], "fgm": raw["FGM"], "fg3a": raw["FG3A"],
-        "fg3m": raw["FG3M"], "fta": raw["FTA"], "ftm": raw["FTM"], "oreb": raw["OREB"],
-        "reb": raw["REB"], "ast": raw["AST"], "tov": raw["TOV"], "starter": float("nan"),
-    })
-    return d[d["min"] > 0]
-
-
-def _minutes(s):
-    m = re.match(r"PT(\d+)M([\d.]+)S", str(s or ""))
-    return int(m.group(1)) + float(m.group(2)) / 60 if m else 0.0
-
-
-def cdn_box(gid):
-    """Feuille de match du CDN NBA : (terminé ?, lignes joueurs)."""
-    data = http(C.CDN_BOX.format(gid=gid), retries=2, timeout=30)
-    if not data or "game" not in data:
-        return None, []
-    g = data["game"]
-    final = g.get("gameStatus") == 3
-    et = g.get("gameEt") or ""
-    day = et[:10] if et else datetime.fromisoformat(g["gameTimeUTC"].replace("Z", "+00:00")).astimezone(NY).date().isoformat()
-    rows = []
-    for side, other, home in (("homeTeam", "awayTeam", 1), ("awayTeam", "homeTeam", 0)):
-        t, o = g[side], g[other]
-        for p in t.get("players", []):
-            s = p.get("statistics", {})
-            mins = _minutes(s.get("minutes") or s.get("minutesCalculated"))
-            if p.get("played") != "1" or mins <= 0:
-                continue
-            rows.append({
-                "player_id": int(p["personId"]),
-                "name": p.get("name") or f"{p.get('firstName', '')} {p.get('familyName', '')}".strip(),
-                "team": t["teamTricode"], "opp": o["teamTricode"], "home": home, "game_id": gid,
-                "date": day, "min": round(mins, 1), "pts": s.get("points", 0),
-                "fga": s.get("fieldGoalsAttempted", 0), "fgm": s.get("fieldGoalsMade", 0),
-                "fg3a": s.get("threePointersAttempted", 0), "fg3m": s.get("threePointersMade", 0),
-                "fta": s.get("freeThrowsAttempted", 0), "ftm": s.get("freeThrowsMade", 0),
-                "oreb": s.get("reboundsOffensive", 0), "reb": s.get("reboundsTotal", 0),
-                "ast": s.get("assists", 0), "tov": s.get("turnovers", 0),
-                "starter": 1.0 if p.get("starter") == "1" else 0.0})
-    return final, rows
-
-
-def _cdn_logs(season):
-    """Reconstruit une saison à partir des feuilles de match (une requête par match, mises en cache)."""
-    box_dir = _cache_path(f"box_{season}")
-    box_dir.mkdir(exist_ok=True)
-    if season == C.CURRENT_SEASON:
-        gids = [g["game_id"] for g in schedule_all() if g["state"] == 3]
-    else:
-        yy = str(season)[2:]
-        gids = [f"002{yy}{i:05d}" for i in range(1, 1231)]
-    rows, misses = [], 0
-    for gid in gids:
-        f = box_dir / f"{gid}.json"
-        if f.exists():
-            rows += json.loads(f.read_text())
-            continue
-        final, r = cdn_box(gid)
-        time.sleep(0.15)
-        if final is None:
-            misses += 1
-            if misses > 25 and not rows:
-                print("  ! le CDN NBA ne répond pas non plus", file=sys.stderr)
-                return None
-            continue
-        if final:
-            f.write_text(json.dumps(r))
-            rows += r
-    d = pd.DataFrame(rows)
-    if d.empty:
-        return None
-    d["season"] = season
-    return d
 
 
 def team_logs(pl):
@@ -209,49 +249,6 @@ def team_logs(pl):
     t = t.merge(o, on=["game_id", "opp"], how="left")
     t["poss"] = (t["poss"] + t["opp_poss"]) / 2          # possessions du match (moyenne des deux équipes)
     return t.drop(columns="opp_poss")
-
-
-# ---------------------------------------------------------------- calendrier
-
-_SCHED = None
-
-
-def schedule_all():
-    global _SCHED
-    if _SCHED is None:
-        data = http(C.CDN_SCHEDULE) or {}
-        out = []
-        for d in data.get("leagueSchedule", {}).get("gameDates", []):
-            for g in d.get("games", []):
-                gid = str(g.get("gameId", ""))
-                if gid[:3] not in ("002", "004", "005"):     # saison, séries, play-in
-                    continue
-                h, a = g.get("homeTeam", {}), g.get("awayTeam", {})
-                if not h.get("teamTricode") or not a.get("teamTricode"):
-                    continue
-                day = (g.get("gameDateEst") or "")[:10]
-                if not day:
-                    day = datetime.strptime(d["gameDate"][:10], "%m/%d/%Y").date().isoformat()
-                out.append({"game_id": gid, "day": day, "start": g.get("gameDateTimeUTC"),
-                            "state": g.get("gameStatus"), "home": fix(h["teamTricode"]),
-                            "away": fix(a["teamTricode"]), "home_name": h.get("teamName") or h["teamTricode"],
-                            "away_name": a.get("teamName") or a["teamTricode"], "venue": g.get("arenaName", "")})
-        _SCHED = out
-    return _SCHED
-
-
-def schedule(day):
-    """Matchs d'une soirée NBA (date à l'heure de New York)."""
-    return [dict(g) for g in schedule_all() if g["day"] == day.isoformat()]
-
-
-def boxscore_points(gid):
-    """{personId: points} pour un match terminé, ou None s'il n'est pas fini / introuvable."""
-    final, rows = cdn_box(gid)
-    if not final:
-        return None
-    pts = {r["player_id"]: int(r["pts"] or 0) for r in rows}
-    return pts
 
 
 # ---------------------------------------------------------------- blessures
